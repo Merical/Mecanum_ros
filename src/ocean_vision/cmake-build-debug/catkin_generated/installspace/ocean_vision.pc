@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: ocean_vision
+Description: Description of ocean_vision
+Version: 0.1.0
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib 
+Requires: message_runtime

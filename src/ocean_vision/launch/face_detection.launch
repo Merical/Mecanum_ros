@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="ocean_vision" name="face_marker" type="face_marker.py" clear_params="true" output="screen">
+    <rosparam>
+        frame_wdith: 640
+        frame_height: 480
+        horizontal_angle: 70
+        depth_topic: "/camera/aligned_depth_to_color/image_raw"
+        marker_frame_id: "map"
+    </rosparam>
+  </node>
+</launch>

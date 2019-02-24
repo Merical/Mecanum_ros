@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>handsfree_gazebo</name>
+  <version>0.1.0</version>
+  <description>The handsfree_gazebo store the urdf and gazebo config for handsfree robot system
+  </description>
+
+  <maintainer email="hands_free@126.com">HandsFree</maintainer>
+  <license>BSD</license>
+  <url type="website">http://wiki.hfreetech.org</url>
+  <url type="bugtracker">https://github.com/HANDS-FREE/handsfree/issues</url>
+  <maintainer email="luke_liao@126.com">luke_liao</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+
+  </export>
+</package>

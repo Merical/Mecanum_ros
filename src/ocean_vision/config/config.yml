@@ -1,0 +1,7 @@
+%YAML:1.0
+---
+Video:
+  FRAME_WIDTH: 320
+  FRAME_HEIGHT: 240
+  source: 0
+  fps: 10

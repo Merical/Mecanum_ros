@@ -1,0 +1,27 @@
+<launch>
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="align_depth" value="true"/>
+  </include>
+
+  <node pkg="ocean_vision" name="cmt_ros" type="cmt_ros" clear_params="true" output="screen"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera_link" args="0 0 0.6 0 0 0 base_link camera_link 50" />
+
+
+  <node pkg="ocean_vision" name="tracker_with_marker" type="tracker_with_marker.py" clear_params="true" output="screen">
+    <rosparam>
+       rate: 20
+       max_x: 20.0
+       goal_x: 0.7
+       x_threshold: 0.03
+       y_threshold: 0.15
+       y_scale: 0
+       x_scale: 1.0
+       max_angular_speed: 1.0
+       min_angular_speed: 0.05
+       max_linear_speed: 0.75
+       min_linear_speed: 0.1
+    </rosparam>
+  </node>
+
+  <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find handsfree_2dnav)/rviz/HANDSFREE_Robot.rviz" />-->
+</launch>

@@ -1,0 +1,5 @@
+<launch>
+  <arg name="model" default="$(env SC_ROBOT_MODEL)" doc="model type [mini, stone_v2, stone_v3, giraffe, mecanum]"/>
+
+  <include file="$(find sc_2dnav)/move_base_config/$(arg model)/slam_gmapping.xml"/>
+</launch>

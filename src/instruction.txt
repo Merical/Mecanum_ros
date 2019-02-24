@@ -1,0 +1,9 @@
+sc_navigation_demo:
+	plug in sc_USB
+	plug in rplidar USB
+	roslaunch rplidar_ros rplidar.launch
+	roslaunch handsfree_hw sc_hw.launch
+	roslaunch sc_2dnav move_base_amcl.launch map_name:=ocean_rplidar
+	rosrun rviz rviz -d `rospack find sc_2dnav`/rviz/HANDSFREE_Robot.rviz
+	estimate pose
+	nave goal
