@@ -27,7 +27,7 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/robot_hw.h>
 #include <realtime_tools/realtime_publisher.h>
-#include <handsfree_msgs/robot_state.h>
+#include <sc_msgs/robot_state.h>
 
 #include <controller_manager/controller_manager.h>
 // for ros headers
@@ -73,7 +73,7 @@ private:
     double controller_freq_;
 
     //hardware resource
-    handsfree_msgs::robot_state robot_state;
+    sc_msgs::robot_state robot_state;
 
     std::vector<double> wheel_pos_, wheel_vel_, wheel_eff_, wheel_cmd_;
     std::vector<double> arm_pos_  , arm_vel_  , arm_eff_, arm_cmd_;

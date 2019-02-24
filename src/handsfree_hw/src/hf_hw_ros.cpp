@@ -36,7 +36,7 @@ HF_HW_ros::HF_HW_ros(ros::NodeHandle &nh, std::string url, std::string config_ad
     nh_.getParam("odom_linear_scale_correction", odom_linear_scale_correction);
     nh_.getParam("odom_angle_scale_correction", odom_angle_scale_correction);
 
-    robot_state_publisher_ = nh_.advertise<handsfree_msgs::robot_state>("robot_state", 10);
+    robot_state_publisher_ = nh_.advertise<sc_msgs::robot_state>("robot_state", 10);
 
     x_ = y_ = theta_ = x_cmd_ = y_cmd_ = theta_cmd_ = 0.0;
     x_vel_ = y_vel_ = theta_vel_ = 0.0;

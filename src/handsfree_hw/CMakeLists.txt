@@ -8,9 +8,11 @@ find_package(catkin REQUIRED COMPONENTS
   realtime_tools
   roscpp
   std_msgs
-  handsfree_msgs
+  sc_msgs
 )
 
+set(config_path \"${CMAKE_CURRENT_SOURCE_DIR}\")
+add_definitions(-DCONFIG_PATH=${config_path})
 catkin_package(   
   INCLUDE_DIRS include
 #  LIBRARIES handsfree_hw
@@ -28,7 +30,7 @@ include_directories(
 
 add_executable(handsfree_hw_node src/main.cpp src/transport_serial.cpp include/sdk/hf_link/hf_link.cpp include/sdk/hf_link/hf_link_state_machine.cpp src/hf_hw.cpp src/hf_hw_ros.cpp)
 
-add_dependencies(handsfree_hw_node handsfree_msgs_gencpp)
+add_dependencies(handsfree_hw_node sc_msgs_gencpp)
 
 target_link_libraries(handsfree_hw_node ${catkin_LIBRARIES})
 

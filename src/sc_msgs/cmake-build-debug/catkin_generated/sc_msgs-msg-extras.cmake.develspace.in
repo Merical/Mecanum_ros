@@ -1,0 +1,2 @@
+set(sc_msgs_MESSAGE_FILES "/home/lishenghao/ros_workspace/SC0_ws/src/sc_msgs/msg/robot_state.msg;/home/lishenghao/ros_workspace/SC0_ws/src/sc_msgs/msg/parameters.msg")
+set(sc_msgs_SERVICE_FILES "/home/lishenghao/ros_workspace/SC0_ws/src/sc_msgs/srv/GetParamList.srv;/home/lishenghao/ros_workspace/SC0_ws/src/sc_msgs/srv/SetParamList.srv")

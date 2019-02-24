@@ -1,0 +1,8 @@
+prefix=/home/lishenghao/ros_workspace/SC0_ws/src/handsfree_hw/cmake-build-debug/devel
+
+Name: handsfree_hw
+Description: Description of handsfree_hw
+Version: 0.1.0
+Cflags: -I/home/lishenghao/ros_workspace/SC0_ws/src/handsfree_hw/include
+Libs: -L/home/lishenghao/ros_workspace/SC0_ws/src/handsfree_hw/cmake-build-debug/devel/lib 
+Requires: 

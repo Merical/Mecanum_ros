@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: handsfree_msgs
+Description: Description of handsfree_msgs
+Version: 0.1.0
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib 
+Requires: message_generation sensor_msgs std_msgs
