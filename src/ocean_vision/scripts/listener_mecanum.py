@@ -81,7 +81,7 @@ class CMTFollower(object):
 
     def run(self):
         # rospy.init_node('listener', anonymous=True)
-        rospy.Subscriber('chatter', String, self.callback)
+        rospy.Subscriber('/ob_vision/follower/chatter', String, self.callback)
 
     def get_speed_scale(self, c_delta, s_delta, search_flag=False, count=0):
         if not search_flag:

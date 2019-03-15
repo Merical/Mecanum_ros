@@ -8,9 +8,10 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
  add_message_files(
-   FILES
-   robot_state.msg
-   parameters.msg
+         FILES
+         robot_state.msg
+         parameters.msg
+         vision_rect.msg
  )
 
 

@@ -15,6 +15,7 @@
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
+#include <sc_msgs/vision_rect.h>
 #include "geometry_msgs/Twist.h"
 
 #include <opencv2/core/core.hpp>
@@ -42,12 +43,16 @@ private:
 
 public:
     ros::Publisher chatter_pub;
+    ros::Subscriber rect_sub;
+    image_transport::Publisher color_pub;
     std_msgs::String CMTmsg;
 
     cv::Mat ColorFrame = cv::Mat::zeros(Size2f(640, 480), CV_64F);
     cv::Mat GrayFrame = cv::Mat::zeros(Size2f(640, 480), CV_64F);
     cv::Mat DepthFrame = cv::Mat::zeros(Size2f(640, 480), CV_64F);
+    cv::Mat ColorResult = cv::Mat::zeros(Size2f(640, 480), CV_64F);
     cv::Rect Rect;
+    sensor_msgs::ImagePtr color_msg;
 
     bool fPreview   =   true;
     bool fCMT       =   false;
@@ -61,7 +66,9 @@ public:
     {
         color_sub = it.subscribe("/camera/color/image_raw", 1, &CmtFrameTrans::colorGrab, this);
         depth_sub = it.subscribe("/camera/aligned_depth_to_color/image_raw", 1, &CmtFrameTrans::depthGrab, this);
-        chatter_pub = nh.advertise<std_msgs::String>("chatter", 1000);
+        rect_sub = nh.subscribe("ob_vision/follower/initial_rect", 1, &CmtFrameTrans::getTopicRect, this);
+        chatter_pub = nh.advertise<std_msgs::String>("/ob_vision/follower/chatter", 1000);
+        color_pub = it.advertise("ob_vision/follower/color", 1);
 
         cv::namedWindow(COLOR_WINDOW, CV_WINDOW_NORMAL);
         cv::namedWindow(DEPTH_WINDOW, CV_WINDOW_NORMAL);
@@ -74,7 +81,10 @@ public:
 
     void colorGrab(const sensor_msgs::ImageConstPtr& msgs);
     void depthGrab(const sensor_msgs::ImageConstPtr& msg);
+    void colorPub();
     void run();
+    void getTopicRect(const sc_msgs::vision_rect& msg);
+    int display_ros_copy(Mat im, const string win_name);
 
 
 };

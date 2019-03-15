@@ -1,10 +1,4 @@
 <launch>
-  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-    <arg name="align_depth" value="true"/>
-  </include>
-
-  <include file="$(find handsfree_hw)/launch/sc_hw.launch"/>
-
   <node pkg="ocean_vision" name="cmt_ros" type="cmt_ros" clear_params="true" output="screen"/>
 
   <node pkg="ocean_vision" name="listener_depth" type="listener_depth.py" clear_params="true" output="screen">

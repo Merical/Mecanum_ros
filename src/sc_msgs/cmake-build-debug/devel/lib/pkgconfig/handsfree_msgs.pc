@@ -1,8 +1,0 @@
-prefix=/home/lishenghao/ros_workspace/SC0_ws/src/handsfree_msgs/cmake-build-debug/devel
-
-Name: handsfree_msgs
-Description: Description of handsfree_msgs
-Version: 0.1.0
-Cflags: -I/home/lishenghao/ros_workspace/SC0_ws/src/handsfree_msgs/cmake-build-debug/devel/include
-Libs: -L/home/lishenghao/ros_workspace/SC0_ws/src/handsfree_msgs/cmake-build-debug/devel/lib 
-Requires: message_generation sensor_msgs std_msgs

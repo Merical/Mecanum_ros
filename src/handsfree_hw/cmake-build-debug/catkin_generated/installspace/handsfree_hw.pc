@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: handsfree_hw
-Description: Description of handsfree_hw
-Version: 0.1.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib 
-Requires: 
