@@ -11,11 +11,9 @@ import threading
 import json
 from geometry_msgs.msg import Twist
 
-speed = 0.2
 
 def get_twist(twist, cmd):
     global speed
-    local_speed = speed
 
     if cmd["CMD"] == "forward":
         twist = Twist()
@@ -26,28 +24,27 @@ def get_twist(twist, cmd):
     elif cmd["CMD"] == "turn left":
         twist = Twist()
         twist.linear.x = speed
-        twist.angular.z = speed
+        twist.angular.z = -speed
     elif cmd["CMD"] == "turn right":
         twist = Twist()
         twist.linear.x = speed
-        twist.angular.z = -speed*2
+        twist.angular.z = speed
     elif cmd['CMD'] == "rotate left":
         twist = Twist()
-        twist.angular.z = -speed*2
+        twist.angular.z = -speed
     elif cmd['CMD'] == "rotate right":
         twist = Twist()
         twist.angular.z = speed
     elif cmd['CMD'] == "speed up":
-        speed = speed * 2
-        speed = min(speed, 0.6)
-    elif cmd['CMD'] == "speed down":
-        speed = speed / 2
-        speed = max(speed, 0.1)
-    elif cmd['CMD'] == "stop":
-        twist = Twist()
+        speed *= 2
+        twist.linear.x *= 2
+        twist.angular.z *= 2
+    elif cmd['CMD'] == "speed up":
+        speed /= 2
+        twist.linear.x *= 2
+        twist.angular.z *= 2
     else:
         twist = Twist()
-    # print('LCH: the speed is ', speed)
 
     return twist
 
@@ -99,13 +96,7 @@ def motion_job():
             count = 0
 
         else:
-            if last_cmd:
-                if last_cmd['CMD'] == "speed up" or last_cmd['CMD'] == "speed down":
-                    twist = Twist()
-                else:
-                    twist = get_twist(twist, last_cmd)
-            else:
-                twist = Twist()
+            twist = get_twist(twist, last_cmd) if last_cmd else Twist()
             count += 1
 
         if count > 20:
@@ -119,7 +110,7 @@ def motion_job():
 if __name__ == '__main__':
     print('Server debug thread begin')
     cmd_queue = Queue.deque()
-    # speed = 0.2
+    speed = 0.4
 
     rospy.init_node('server_debug_thread')
     pub = rospy.Publisher('~cmd_vel', Twist, queue_size=5)

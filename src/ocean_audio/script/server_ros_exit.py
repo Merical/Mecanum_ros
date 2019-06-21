@@ -3,6 +3,7 @@
 
 import socket
 import re
+import sys
 import rospy
 import time
 import Queue
@@ -17,6 +18,7 @@ from geometry_msgs.msg import Twist
 def communication_job():
     global cmd_queue
     global init_queue
+    global shutdown_flag
     # global clientsocket
 
     ip_port = ('192.168.10.11', 8899)
@@ -25,12 +27,12 @@ def communication_job():
     sk.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
     sk.bind(ip_port)
     sk.listen(5)
-    clientsocket, addr = sk.accept()
+    serverSocket, addr = sk.accept()
     print('LCH: Socket initialized, processes begin')
 
-    while not rospy.is_shutdown():
+    while (not rospy.is_shutdown()) and (not shutdown_flag):
 
-        data = clientsocket.recv(1024)
+        data = serverSocket.recv(1024)
         message = data.decode()
         if len(message) > 0:
             print 'LCH: recv done, message is ', message
@@ -40,15 +42,25 @@ def communication_job():
 
             if len(slices) > 0:
                 message_dict = json.loads(slices[-1])
-                cmd_queue.append(message_dict['COM']['CMD'])
-                node_queue.append(message_dict['COM']['ROS'])
-                init_queue.append(message_dict['COM']['INI'])
+                if message_dict['COM']['EXIT'] == 1:
+                    shutdown_flag = True
+                    print 'the shutdown_flag is ',shutdown_flag
+                    break
+                for _ in range(3):
+                    cmd_queue.append(message_dict['COM']['CMD'])
+                    node_queue.append(message_dict['COM']['ROS'])
+                    init_queue.append(message_dict['COM']['INI'])
         time.sleep(0.005)
-    clientsocket.close()
+    print 'communication_job drop out the loop'
+    time.sleep(0.5)
+    serverSocket.close()
+    del serverSocket
+    exit(0)
 
 def initialize_job():
     global init_queue
     global init_pub
+    global shutdown_flag
 
     def get_rect(rect, cmd):
         rect.topleft_x = cmd['tl'][0]
@@ -63,7 +75,7 @@ def initialize_job():
     cmd = None
     rate = rospy.Rate(10)
 
-    while not rospy.is_shutdown():
+    while (not rospy.is_shutdown()) and (not shutdown_flag):
         if len(init_queue) > 0:
             while len(init_queue) > 0:
                 cmd = init_queue.popleft()
@@ -73,11 +85,14 @@ def initialize_job():
                 init_pub.publish(rect)
 
         rate.sleep()
+    print 'initialize_job drop out the loop'
+    exit(0)
 
 
 def motion_job():
     global cmd_queue
     global pub
+    global shutdown_flag
 
     def get_twist(twist, cmd):
 
@@ -93,7 +108,7 @@ def motion_job():
     cmd = None
     rate = rospy.Rate(10)
 
-    while not rospy.is_shutdown():
+    while (not rospy.is_shutdown()) and (not shutdown_flag):
         if len(cmd_queue) > 0:
             while len(cmd_queue) > 0:
                 cmd = cmd_queue.popleft()
@@ -114,11 +129,14 @@ def motion_job():
 
         pub.publish(twist)
         rate.sleep()
+    print 'motion_job drop out the loop'
     pub.publish(Twist())
+    exit(0)
 
 
 def node_job():
     global node_queue
+    global shutdown_flag
 
     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
     roslaunch.configure_logging(uuid)
@@ -142,45 +160,62 @@ def node_job():
     last_state = {'realsense': 0, 'platform': 0, 'lidar': 0, 'cmt': 0}
     state = None
 
-    while not rospy.is_shutdown():
+    while (not rospy.is_shutdown()) and (not shutdown_flag):
         if len(node_queue) > 0:
             while len(node_queue) > 0:
                 state = node_queue.popleft()
 
             if state != last_state:
                 if state['realsense'] == 1 and last_state['realsense'] == 0:
+                    print 'realsense launching'
                     realsense_launch.start()
+                    print 'realsense launched'
                 elif state['realsense'] == 0 and last_state['realsense'] == 1:
                     realsense_launch.shutdown()
+                    print 'realsense shutdown'
                 elif state['platform'] == 1 and last_state['platform'] == 0:
+                    print 'realsense launching'
                     platform_launch.start()
+                    print 'realsense launched'
                 elif state['platform'] == 0 and last_state['platform'] == 1:
                     platform_launch.shutdown()
+                    print 'platform shutdown'
                 elif state['lidar'] == 1 and last_state['lidar'] == 0:
+                    print 'lidar launching'
                     lidar_launch.start()
+                    print 'lidar launched'
                 elif state['lidar'] == 0 and last_state['lidar'] == 1:
                     lidar_launch.shutdown()
+                    print 'lidar shutdown'
                 elif state['cmt'] == 1 and last_state['cmt'] == 0:
+                    print 'cmt launching'
                     cmt_launch.start()
+                    print 'cmt launched'
                 elif state['cmt'] == 0 and last_state['cmt'] == 1:
                     cmt_launch.shutdown()
+                    print 'cmt shutdown'
                 elif state['video'] == 1 and last_state['video'] == 0:
+                    print 'video launching'
                     video_launch.start()
+                    print 'video launched'
                 elif state['video'] == 0 and last_state['video'] == 1:
                     video_launch.shutdown()
+                    print 'video shutdown'
 
                 last_state = state
-                exit(0)
+        # time.sleep(1)
 
-
+    print 'node_job drop out the loop'
     realsense_launch.shutdown()
     cmt_launch.shutdown()
     lidar_launch.shutdown()
     platform_launch.shutdown()
+    exit(0)
 
 
 if __name__ == '__main__':
     print('ocean_gui_communication begin')
+    shutdown_flag = False
     cmd_queue = Queue.deque()
     node_queue = Queue.deque()
     init_queue = Queue.deque()
@@ -203,4 +238,6 @@ if __name__ == '__main__':
     node_job()
 
     rospy.spin()
+    time.sleep(1)
+    exit(0)
 
