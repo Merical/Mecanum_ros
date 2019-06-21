@@ -8,6 +8,18 @@ ros_workspace: SC0_ws
 
 	cd ~/ros_workspace/SC0_ws/
 	catkin_make
+	
+# Ros Remote Connection:
+
+on PC (add following lines to ~/.bashrc)
+
+	export ROS_MASTER_URI=http://PC_IP_ADDRESS:11311
+	export ROS_HOSTNAME=PC_IP_ADDRESS
+	
+on Server (add following lines to ~/.bashrc)
+
+	export ROS_MASTER_URI=http://PC_IP_ADDRESS:11311
+	export ROS_HOSTNAME=SERVER_IP_ADDRESS
 
 # Mapping:
 
