@@ -45,18 +45,18 @@ on Server (add following lines to ~/.bashrc)
 
 mapping:
 
-		roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start"
-		roslaunch sc_2dnav demo_sc_rtab_rviz.launch
+		roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start" (nuc)
+		roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
 
 navigation:
 
-		roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true
-		roslaunch sc_2dnav demo_sc_rtab_rviz.launch
+		roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true (nuc)
+		roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
 
 # Audio:
 
 	roslaunch handsfree_hw sc_hw.launch
-	roslaunch ocean_audio ocean_audio.launch  (pc)   
+	roslaunch ocean_audio ocean_audio.launch  (pc/nuc)   
 	recognize.py  (pc)
 
 # Visual_tracking:
