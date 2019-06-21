@@ -112,6 +112,15 @@ public:
     /************************************IMU sensors********************************************/
     IMUSensorData gyro_acc , magnetic_fusion; //(pitch,roll,yaw)(radian,radian,radian)
     GPSData gps_data;
+
+    /************************************mode informations**************************************/
+    INTFMode measure_intf_mode, expect_intf_mode;
+    MODULEConfig module_config;
+
+    /************************************sonar data*********************************************/
+    SonarData measure_sonar_data;
+    SonarState expect_sonar_state;
+
 };
 
 

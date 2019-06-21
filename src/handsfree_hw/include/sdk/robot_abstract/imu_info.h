@@ -10,12 +10,34 @@ typedef struct{
     unsigned char sec;
 }UtcTime;
 
+typedef struct {
+    int work;
+    int sonar_1;
+    int sonar_2;
+    int sonar_3;
+    int sonar_4;
+    int sonar_5;
+    int sonar_6;
+    int sonar_7;
+    int sonar_8;
+}SonarData;
+
+typedef struct{
+    int work;
+}SonarState;
+
 typedef  struct{
-    float  pitch;
-    float  roll;
-    float  yaw;
-    float bar_altitude;   //unit : m
-    float magnetic_angle;
+    float pitch;
+    float roll;
+    float yaw;
+    float linear_acc_x;
+    float linear_acc_y;
+    float linear_acc_z;
+    float angular_vel_x;
+    float angular_vel_y;
+    float angular_vel_z;
+//    float bar_altitude;   //unit : m
+//    float magnetic_angle;
 }IMUSensorData;
 
 ////NMEA 0183 协议解析后数据存放结构体
@@ -50,5 +72,22 @@ typedef  struct{
     unsigned int longitude;	     //经度 分扩大100000倍,实际要除以100000
     unsigned char ewhemi;	     //东经/西经,E:东经;W:西经
 }GPSData;
+
+typedef  struct {
+    int intf; // 0(undefined),1(json),2(ros)
+    int mode; // 0(ctrl), 1(trac)
+//    int gear; // (0,1,2?)()
+//    int pid; // 0(off), 1(on)
+}INTFMode;
+
+typedef struct{
+    int plate_type; //0(unknow), 1(rov), 2(mobile)
+    int imu_num; // 0(no)
+    int track_num; //
+    int ultra_num; //
+    int arm_num; //
+    int head_num; //
+    int serv_num; //
+}MODULEConfig;
 
 #endif // IMU_PARAMETERS_H

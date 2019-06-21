@@ -3,6 +3,7 @@
   <node name="handsfree_hw_node" pkg="handsfree_hw" type="handsfree_hw_node" output="screen" >
       <param name="odom_linear_scale_correction" value="1.0" type="double"/>
       <param name="odom_angle_scale_correction" value="0.965" type="double"/>
+      <param name="serial_port"         type="string" value="/dev/SCRobot"/>
   </node>
 
   <param name="robot_description" command="$(find xacro)/xacro '$(find sc_gazebo)/urdf/sc_mecanum.urdf.xacro'" />

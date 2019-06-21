@@ -94,7 +94,7 @@ private:
 
     inline void sendCommand(const Command command_state)
     {
-        std::cout<<"send message  "<<command_state <<std::endl;
+//        std::cout<<"LCH: send message  "<<command_state <<std::endl;
         hflink_->masterSendCommand(command_state);
         Buffer data(hflink_->getSerializedData(), hflink_->getSerializedLength() + hflink_->getSerializedData());
         port_->writeBuffer(data);

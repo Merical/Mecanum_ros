@@ -36,7 +36,23 @@ HF_HW_ros::HF_HW_ros(ros::NodeHandle &nh, std::string url, std::string config_ad
     nh_.getParam("odom_linear_scale_correction", odom_linear_scale_correction);
     nh_.getParam("odom_angle_scale_correction", odom_angle_scale_correction);
 
+    intf_state_ros_sub.robot_mode = 0;
+    intf_state_ros_sub.robot_intf = 2;
+
     robot_state_publisher_ = nh_.advertise<sc_msgs::robot_state>("robot_state", 10);
+    imu_data_publisher_ = nh_.advertise<sensor_msgs::Imu>("imu_data", 10);
+
+    sonar_front_1_  = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_front_1_", 10);
+    sonar_front_5_  = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_front_5_", 10);
+    sonar_right_2_  = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_right_2_", 10);
+    sonar_right_6_  = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_right_6_", 10);
+    sonar_back_3_   = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_back_3_", 10);
+    sonar_back_7_   = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_back_7_", 10);
+    sonar_left_4_   = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_left_4_", 10);
+    sonar_left_8_   = nh_.advertise<sensor_msgs::Range>("/sensor/sonar_left_8_", 10);
+
+    robot_intf_subscriber_ = nh_.subscribe("/sc/intf_state", 1, &HF_HW_ros::expectIntfGrab, this);
+    ROS_INFO("System Ros publishers and subscribers are ready.");
 
     x_ = y_ = theta_ = x_cmd_ = y_cmd_ = theta_cmd_ = 0.0;
     x_vel_ = y_vel_ = theta_vel_ = 0.0;
@@ -53,6 +69,7 @@ HF_HW_ros::HF_HW_ros(ros::NodeHandle &nh, std::string url, std::string config_ad
     hardware_interface::BaseVelocityHandle base_handle(base_state_handle, &x_cmd_, &y_cmd_, &theta_cmd_);
     base_velocity_interface_.registerHandle(base_handle);
     registerInterface(&base_velocity_interface_);
+    ROS_INFO("Hardware interface registered.");
 
     if (base_mode_ == "3omni-wheel")
     {
@@ -128,6 +145,7 @@ HF_HW_ros::HF_HW_ros(ros::NodeHandle &nh, std::string url, std::string config_ad
         registerInterface(&jnt_state_interface_);
         registerInterface(&base_vel_interface_);
     }
+    ROS_INFO("System base mode set.");
 
     if (with_arm_)
     {
@@ -184,30 +202,72 @@ void HF_HW_ros::mainloop()
     while (ros::ok())
     {
         hf_hw_.checkHandshake();
+//        if (count == 0) {
+//            hf_hw_.updateCommand(READ_MODULE_CONFIG, count);
+//            cout << "LCH: the model config: plate_type "<< plate_type_ <<", imu_num "<< imu_num_ <<", track_num "<< track_num_ <<", ultra_num " << ultra_num_ << ", arm_num " << arm_num_ << ", head_num " << head_num_ << ", serv_num " << serv_num_ << endl;
+//        }
 //        if (hf_hw_.updateCommand(READ_SYSTEM_INFO, count))
 //        {
 //            std::cout<< "spend time is  "<< (ros::Time::now() - currentTime).toSec()<<std::endl;
 //            currentTime = ros::Time::now();
 //            robot_state_publisher_.publish(robot_state);
 //        }
-//        hf_hw_.updateCommand(READ_MOTOR_SPEED, count);
-        hf_hw_.updateCommand(READ_GLOBAL_COORDINATE, count);
-        hf_hw_.updateCommand(READ_ROBOT_SPEED, count);
+//        if (hf_hw_.updateCommand(READ_IMU_FUSION_DATA, count) && (count>0))
+//        {
+//            imu_data_publisher_.publish(imu_data);
+//        }
+
+        if (intf_state_ros_sub.robot_intf == 2 and intf_state_ros_sub.robot_mode == 0){
+            hf_hw_.updateCommand(READ_GLOBAL_COORDINATE, count);
+//            cout << "read coordinage " << endl;
+            hf_hw_.updateCommand(READ_ROBOT_SPEED, count);
+//            cout << "read speed " << endl;
+            hf_hw_.updateCommand(READ_INTF_MODE, count);
+
+            if (hf_hw_.updateCommand(READ_IMU_FUSION_DATA, count) && (count>0))
+            {
+                imu_data_publisher_.publish(imu_data);
+            }
+        }
+//        hf_hw_.updateCommand(READ_SONAR_DATA, count);
 //        hf_hw_.updateCommand(READ_HEAD_STATE, count);
         if (count == 0) readBufferUpdateFirst();
         else readBufferUpdate();
+//        cout << "\nLCH: loop count " << count << " with format x, y, theta" << endl;
+//        cout << "the raw data is " << x_raw << " " << y_raw << " " << theta_raw << endl;
+//        cout << "the processed data is " << x_ << " " << y_ << " " << theta_ << endl;
+//        cout << "\n";
+
 
         cm.update(ros::Time::now(), ros::Duration(1 / controller_freq_));
-//        sleep(0.1);
 
-//        ROS_INFO("head_servo1_cmd_ = %.4f  head_servo2_cmd_=%.4f" , head_servo1_cmd_ ,head_servo2_cmd_);
-//        ROS_INFO("LCH: x_vel_ = %.4f  y_vel_ = %.4f theta_vel_ = %.4f" , x_vel_, y_vel_, theta_vel_);
         writeBufferUpdate();
-        hf_hw_.updateCommand(SET_ROBOT_SPEED, count);
-//        hf_hw_.updateCommand(SET_HEAD_STATE , count);
-
+        if (count == 0 or intf_state_robot.robot_intf != intf_state_ros_sub.robot_intf or intf_state_robot.robot_mode != intf_state_ros_sub.robot_mode){
+            hf_hw_.updateCommand(SET_INTF_MODE, count);
+        }
+        if (intf_state_ros_sub.robot_intf == 2 and intf_state_ros_sub.robot_mode == 0){
+            hf_hw_.updateCommand(SET_ROBOT_SPEED, count);
+        }
         loop.sleep();
         count++;
+
+//        hf_hw_.checkHandshake();
+//        hf_hw_.updateCommand(READ_GLOBAL_COORDINATE, count);
+//        sleep(0.005);
+//        hf_hw_.updateCommand(READ_ROBOT_SPEED, count);
+//        sleep(0.005);
+//        if (count == 0) readBufferUpdateFirst();
+//        else readBufferUpdate();
+//
+//        cm.update(ros::Time::now(), ros::Duration(1 / controller_freq_));
+//
+//        writeBufferUpdate();
+//        hf_hw_.updateCommand(SET_ROBOT_SPEED, count);
+//        sleep(0.005);
+//
+//        loop.sleep();
+//        count++;
+
     }
 
     cm_spinner.stop();

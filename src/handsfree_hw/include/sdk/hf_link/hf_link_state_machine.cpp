@@ -114,7 +114,7 @@ unsigned char StateMachine::receiveStates(const unsigned char rx_data)
             receive_check_sum_=0;
             receive_state_ = WAITING_FF1;
 #if HF_LINK_NODE_MODEL == 1
-            printf("receive a message \n");
+//            printf("receive a message \n");
 #endif
             receive_message_count ++ ;
             return 1 ;

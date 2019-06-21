@@ -174,7 +174,7 @@ bool HF_HW::updateCommand(const Command &command, int count)
         data = port_->readBuffer();
         if (cicle_timer_.expires_from_now().is_negative())
         {
-            std::cerr<<"Timeout continue skip this package"<<std::endl;
+            std::cerr<<"Timeout continue skip this package " << command <<std::endl;
             return false;
         }
     }

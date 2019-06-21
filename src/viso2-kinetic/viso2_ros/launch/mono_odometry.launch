@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- Viso2 -->
+  <node pkg="viso2_ros" type="mono_odometer" name="mono_odometer">
+    <remap from="image" to="/camera/color/image_raw"/>
+    <param name="base_link_frame_id" value="camera_link"/>
+  </node>
+
+</launch>

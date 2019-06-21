@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
          robot_state.msg
          parameters.msg
          vision_rect.msg
+         intf_state.msg
  )
 
 

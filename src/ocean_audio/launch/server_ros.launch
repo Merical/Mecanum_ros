@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="ocean_audio" type="server_ros.py" name="server_ros"  output="screen">
+        <remap from="server_ros/cmd_vel" to="/mobile_base/mobile_base_controller/cmd_vel" />
+    </node>
+</launch>

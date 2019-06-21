@@ -1,0 +1,6 @@
+<launch>
+    <!-- turtlebot_teleop_key already has its own built in velocity smoother -->
+    <node pkg="ocean_audio" type="server_debug_thread.py" name="server_debug_thread"  output="screen">
+        <remap from="server_debug_thread/cmd_vel" to="/mobile_base/mobile_base_controller/cmd_vel" />
+    </node>
+</launch>

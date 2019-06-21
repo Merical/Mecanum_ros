@@ -17,7 +17,7 @@
     <param name="oscillation_distance" value="0.22" />
 
     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
-    <!-- param name="base_global_planner" value="global_planner/GlobalPlanner" / -->
+    <param name="base_global_planner" value="global_planner/GlobalPlanner"/>
 
     <rosparam file="$(find sc_2dnav)/move_base_config/$(arg model)/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find sc_2dnav)/move_base_config/$(arg model)/costmap_common_params.yaml" command="load" ns="local_costmap" />

@@ -5,11 +5,9 @@
   <description>The sc_2dnav package for handsfree navigation application config
   </description>
 
-  <maintainer email="chenghao.li@oceanbotech.com">HandsFree</maintainer>
+  <maintainer email="chenghao.li@oceanbotech.com">Chenghao Li</maintainer>
   <license>BSD</license>
-  <url type="website">http://wiki.hfreetech.org</url>
-  <url type="bugtracker">https://github.com/HANDS-FREE/handsfree/issues</url>
-  <author email="lch94102@163.com">Chenghao Li</author>
+  <author email="lch94102@163.com">Merical</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 

@@ -1,0 +1,20 @@
+<launch>
+    <!-- start sensor-->      
+  　      
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch"></include>  
+
+    <!-- Run the depthimage_to_laserscan node -->
+    <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+        <remap from="image" to="/camera/depth/image_rect_raw"/>
+        <remap from="camera_info" to="/camera/depth/camera_info"/>
+        <remap from="scan" to="/scan" /> 
+        <param name="scan_height" value="10"/>
+    　　<param name="scan_time" value="0.07"/>
+        <param name="range_min" value="0.45"/>
+        <param name="range_max" value="8.00"/>
+    </node>
+
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    </node>
+
+</launch>

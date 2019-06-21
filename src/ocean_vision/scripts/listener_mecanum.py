@@ -11,25 +11,13 @@ import yaml
 
 class CMTFollower(object):
     def __init__(self):
-        f = open('/home/lishenghao/ros_workspace/my_handsfree_ws/src/ocean_vision/config/pyconfig.yaml', 'r')
-        config = yaml.load(f.read())
-        self.FRAME_WIDTH = config['Video']['FRAME_WIDTH']
-        self.FRAME_HEIGHT = config['Video']['FRAME_HEIGHT']
-        # self.pid_val = config['Handsfree']['k_val']
-        self.scale_default = config['Handsfree']['scale_default']
-        # self.dist_default = config['Handsfree']['dist_default']
-        # self.by_dist = config['Handsfree']['by_dist']
-        self.s_delta_last = 0
-        self.c_delta_last = 0
-        self.d_delta_last = 0
-        self.lost_count = 0
-
         rospy.init_node("cmt_tracker")
         rospy.on_shutdown(self.shutdown)
 
         self.rate = rospy.get_param("~rate", 20)
         r = rospy.Rate(self.rate)
 
+        self.chatter_topic = rospy.get_param("~chatter_topic", '/ob_vision/follower/chatter')
         self.max_angular_speed = rospy.get_param("~max_angular_speed", 2.0)
         self.min_angular_speed = rospy.get_param("~min_angular_speed", 0.5)
         self.max_x = rospy.get_param("~max_x", 20.0)
@@ -41,9 +29,25 @@ class CMTFollower(object):
         self.max_linear_speed = rospy.get_param("~max_linear_speed", 0.3)
         self.min_linear_speed = rospy.get_param("~min_linear_speed", 0.1)
         self.by_dist = rospy.get_param("~by_dist", True)
-        self.pid_val = rospy.get_param("~pid_value", [2, 1, 0.2, 0.15])
+        self.shift_pid_val = rospy.get_param("~shift_pid_value", [1, 0.5, 0.05, 0.05])
+        self.rotate_pid_val = rospy.get_param("~rotate_pid_value", [1, 0.5, 0.05, 0.05])
         self.dist_default = rospy.get_param("~dist_default", 0.8)
+        self.motion_mode = rospy.get_param("~motion_mode", 0)  # 1 for mecanum shift, 0 for rotation
+        self.config_file_path = rospy.get_param("~config_file_path", '/home/lishenghao/ros_workspace/SC0_ws/src/ocean_vision/config/pyconfig.yaml')
         self.cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=5)
+
+        f = open(self.config_file_path, 'r')
+        config = yaml.load(f.read())
+        self.FRAME_WIDTH = config['Video']['FRAME_WIDTH']
+        self.FRAME_HEIGHT = config['Video']['FRAME_HEIGHT']
+        # self.pid_val = config['Handsfree']['k_val']
+        self.scale_default = config['Handsfree']['scale_default']
+        # self.dist_default = config['Handsfree']['dist_default']
+        # self.by_dist = config['Handsfree']['by_dist']
+        self.s_delta_last = 0
+        self.c_delta_last = 0
+        self.d_delta_last = 0
+        self.lost_count = 0
 
         self.move_cmd = Twist()
         self.run()
@@ -81,17 +85,22 @@ class CMTFollower(object):
 
     def run(self):
         # rospy.init_node('listener', anonymous=True)
-        rospy.Subscriber('/ob_vision/follower/chatter', String, self.callback)
+        rospy.Subscriber(self.chatter_topic, String, self.callback)
 
     def get_speed_scale(self, c_delta, s_delta, search_flag=False, count=0):
         if not search_flag:
-            kp_x, kd_x, kp_y, kd_y = self.pid_val
+            kp_d, kd_d, kp_y, kd_y = self.shift_pid_val if self.motion_mode else self.rotate_pid_val
             if abs(c_delta) > self.y_threshold and abs(self.c_delta_last - c_delta) < 0.3:
                 y_speed = kp_y * c_delta + kd_y * (c_delta - self.c_delta_last)
                 y_speed = self.map_speed(y_speed)
-                self.move_cmd.linear.y = math.copysign(min(self.max_linear_speed, max(self.max_linear_speed, abs(y_speed))), y_speed)
+                if self.motion_mode:
+                    self.move_cmd.linear.y = math.copysign(min(self.max_linear_speed, max(self.max_linear_speed, abs(y_speed))), y_speed)
+                else:
+                    self.move_cmd.angular.z = math.copysign(max(self.min_angular_speed, min(self.max_angular_speed, abs(y_speed))), y_speed)
+
             else:
                 self.move_cmd.linear.y = 0.0
+                self.move_cmd.angular.z = 0.0
 
             if abs(s_delta) > self.x_threshold and abs(self.s_delta_last - s_delta) < 0.3:
                 x_speed = kp_x * s_delta + kd_x * (s_delta - self.s_delta_last)
@@ -109,13 +118,17 @@ class CMTFollower(object):
 
     def get_speed_dist(self, c_delta, d_delta, search_flag=False, count=0):
         if not search_flag:
-            kp_d, kd_d, kp_y, kd_y = self.pid_val
+            kp_d, kd_d, kp_y, kd_y = self.shift_pid_val if self.motion_mode else self.rotate_pid_val
             if abs(c_delta) > self.y_threshold and abs(self.c_delta_last - c_delta) < 0.3:
                 y_speed = kp_y * c_delta + kd_y * (c_delta - self.c_delta_last)
                 y_speed = self.map_speed(y_speed)
-                self.move_cmd.linear.y = math.copysign(min(self.max_linear_speed, max(self.max_linear_speed, abs(y_speed))), y_speed)
+                if self.motion_mode:
+                    self.move_cmd.linear.y = math.copysign(min(self.max_linear_speed, max(self.max_linear_speed, abs(y_speed))), y_speed)
+                else:
+                    self.move_cmd.angular.z = math.copysign(max(self.min_angular_speed, min(self.max_angular_speed, abs(y_speed))), y_speed)
             else:
                 self.move_cmd.linear.y = 0.0
+                self.move_cmd.angular.z = 0.0
 
             # if abs(d_delta) > self.x_threshold and abs(self.d_delta_last - d_delta) < 0.03:
             if abs(d_delta) > self.x_threshold:

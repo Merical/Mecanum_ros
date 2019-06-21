@@ -1,0 +1,35 @@
+<launch>
+    <include file="$(find sc_2dnav)/robot_tf/d435_tf_rtab1.xml" />
+
+    <node pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="screen">
+        <param name="frame_id"                    type="string" value="base_footprint"/>
+        <param name="wait_for_transform_duration" type="double" value="0.2"/>
+        <param name="Reg/Force3DoF"               type="string" value="true"/>
+        <param name="Vis/InlierDistance"          type="string" value="0.05"/>
+
+        <remap from="rgb/image"         to="/camera/color/image_raw"/>
+        <remap from="depth/image"       to="/camera/aligned_depth_to_color/image_raw"/>
+        <remap from="rgb/camera_info"   to="/camera/color/camera_info"/>
+
+        <remap from="/odom"                 to="/visual_odometry/odom"/>
+        <remap from="/odom_info"            to="/visual_odometry//odom_info"/>
+        <remap from="/odom_last_frame"      to="/visual_odometry/odom_last_frame"/>
+        <remap from="/odom_local_map"       to="/visual_odometry/odom_local_map"/>
+        <remap from="/odom_local_scan_map"  to="/visual_odometry/odom_local_scan_map"/>
+    </node>
+
+    <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+        <param name="output_frame"      value="odom"/>
+        <param name="freq"              value="30.0"/>
+        <param name="sensor_timeout"    value="1.0"/>
+        <param name="odom_used"         value="true"/>
+        <param name="imu_used"          value="false"/>
+        <param name="vo_used"           value="true"/>
+        <param name="debug"             value="false"/>
+        <param name="self_diagnose"     value="false"/>
+
+        <remap from="odom"      to="mobile_base/mobile_base_controller/odom" />
+        <remap from="vo"        to="/visual_odometry/odom"/>
+        <remap from="imu_data"  to="/handsfree/imu_data"/>
+    </node>
+</launch>

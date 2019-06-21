@@ -178,6 +178,26 @@ unsigned char HFLink::packageAnalysis(void)
         analysis_state=readCommandAnalysis(command_state_ , (unsigned char *)&robot->gps_data, sizeof(robot->gps_data));
         break;
 
+    case READ_INTF_MODE :
+        analysis_state=readCommandAnalysis(command_state_, (unsigned char *)&robot->measure_intf_mode, sizeof(robot->measure_intf_mode));
+        break;
+
+    case SET_INTF_MODE :
+        analysis_state=setCommandAnalysis(command_state_, (unsigned char *)&robot->expect_intf_mode, sizeof(robot->expect_intf_mode));
+        break;
+
+    case READ_MODULE_CONFIG :
+        analysis_state=readCommandAnalysis(command_state_, (unsigned char *)&robot->module_config, sizeof(robot->module_config));
+        break;
+
+    case READ_SONAR_DATA :
+        analysis_state=readCommandAnalysis(command_state_, (unsigned char *)&robot->measure_sonar_data, sizeof(robot->measure_sonar_data));
+        break;
+
+    case SET_SONAR_STATE :
+        analysis_state=setCommandAnalysis(command_state_, (unsigned char *)&robot->expect_sonar_state, sizeof(robot->expect_sonar_state));
+        break;
+
     default :
         analysis_state = 0;
         break;
@@ -335,6 +355,26 @@ unsigned char HFLink::masterSendCommand(const Command command_state)
         sendStruct(command_state , NULL , 0);
         break;
 
+    case READ_INTF_MODE :
+        sendStruct(command_state , (unsigned char *)&robot->measure_intf_mode , sizeof(robot->measure_intf_mode ));
+        break;
+
+    case SET_INTF_MODE :
+        sendStruct(command_state , (unsigned char *)&robot->expect_intf_mode , sizeof(robot->expect_intf_mode ));
+        break;
+
+    case READ_MODULE_CONFIG :
+        sendStruct(command_state , (unsigned char *)&robot->module_config , sizeof(robot->module_config ));
+        break;
+
+    case READ_SONAR_DATA :
+        sendStruct(command_state, (unsigned char *)&robot->measure_sonar_data, sizeof(robot->measure_sonar_data));
+        break;
+
+    case SET_SONAR_STATE :
+        sendStruct(command_state, (unsigned char *)&robot->expect_sonar_state, sizeof(robot->expect_sonar_state));
+        break;
+
     default :
         return 0;
         break;
@@ -389,7 +429,7 @@ unsigned char HFLink::setCommandAnalysis( Command command_state , unsigned char*
         }
         else
         {
-            printf("I'm master , received a ack ");
+            printf("I'm master , received a ack \n");
         }
         receive_package_renew[(unsigned char)command_state] = 1 ;
     }

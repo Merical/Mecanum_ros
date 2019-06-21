@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 2.8.3)
 project(handsfree_hw)
 
 find_package(catkin REQUIRED COMPONENTS
-  controller_manager
-  geometry_msgs
-  hardware_interface
-  realtime_tools
-  roscpp
-  std_msgs
-  sc_msgs
+        controller_manager
+        geometry_msgs
+        sensor_msgs
+        hardware_interface
+        realtime_tools
+        roscpp
+        std_msgs
+        sc_msgs
+        tf
 )
 
 set(config_path \"${CMAKE_CURRENT_SOURCE_DIR}\")

@@ -1,0 +1,8 @@
+prefix=/home/lishenghao/ros_workspace/SC0_ws/src/base_simple_controller/cmake-build-debug/devel
+
+Name: base_simple_controller
+Description: Description of base_simple_controller
+Version: 0.1.0
+Cflags: -I/home/lishenghao/ros_workspace/SC0_ws/src/base_simple_controller/include
+Libs: -L/home/lishenghao/ros_workspace/SC0_ws/src/base_simple_controller/cmake-build-debug/devel/lib -lbase_simple_controller
+Requires: 
