@@ -75,6 +75,7 @@ on Server (add following lines to ~/.bashrc)
 # SC_GUI
 ## Python3
 Download weights and demo pictures from [Baidu Yun Link](https://pan.baidu.com/s/1T7QvCqoxyCtAedOI4d67PA) code h5ev
+
 Extract data/ and weights/ folder to the sc_gui_py3 dir.
 	
 	# connect the robot wifi
