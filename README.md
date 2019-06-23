@@ -8,6 +8,7 @@ ros_workspace: SC0_ws
 
 	cd ~/ros_workspace/SC0_ws/
 	catkin_make
+	# copy the rules in src/Documentation/sc_udev to /etc/udev/rules.d
 	
 # Ros Remote Connection:
 
@@ -43,15 +44,15 @@ on Server (add following lines to ~/.bashrc)
 	roslaunch rplidar_ros rplidar.launch
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
 
-mapping:
+## mapping:
 
-		roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start" (nuc)
-		roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
+	roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start" (nuc)
+	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
 
-navigation:
+## navigation:
 
-		roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true (nuc)
-		roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
+	roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true (nuc)
+	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
 
 # Audio:
 
@@ -70,6 +71,15 @@ navigation:
 
 	roslaunch sc_gazebo demo_gazebo_sc0.launch
 	roslaunch sc_gazebo demo_move_base_amcl.launch
+	
+# SC_GUI
+## Python3
+
+	# download weights and demo pictures from [Baidu Yun Link](https://pan.baidu.com/s/1T7QvCqoxyCtAedOI4d67PA) code h5ev and extract to the sc_gui_py3 dir.
+	# connect the robot wifi
+	roslaunch ocean_audio server_ros.launch (nuc)
+	cd sc_gui_py3 (pc)
+	python OB_SC_GUI1.0.py (pc)
 
 # ps:
 	如果发生realsense节点报错"Frame didn't arrive for 5 seconds",停止realsense节点重新拔插摄像头并重启节点
