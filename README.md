@@ -65,7 +65,7 @@ on Server (add following lines to ~/.bashrc)
 	roslaunch handsfree_hw sc_hw.launch
 	roslaunch rplidar_ros rplidar.launch
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
-	roslaunch ocean_vision cmt_tracker_ros_nuc.launch
+	roslaunch ocean_vision cmt_tracker_mecanum_remote.launch
 
 # Simulation(gazebo):
 
