@@ -96,10 +96,12 @@ private:
     std::vector<double> wheel_pos_, wheel_vel_, wheel_eff_, wheel_cmd_;
     std::vector<double> arm_pos_  , arm_vel_  , arm_eff_, arm_cmd_;
     double x_, y_, theta_, x_cmd_, y_cmd_, theta_cmd_;
+    double tran_x, tran_y, rot_theta;
     double yaw_imu_init_raw, pitch_imu_init_raw, roll_imu_init_raw;
     double yaw_imu_current_raw, pitch_imu_current_raw, roll_imu_current_raw;
     double yaw_imu, pitch_imu, roll_imu;
-    double last_x_raw, last_y_raw, last_theta_raw, delta_x, delta_y, delta_theta;
+    double last_x_processed, last_y_processed, last_theta_processed, delta_x, delta_y, delta_theta;
+    double x_processed, y_processed, theta_processed;
     double distance, distance_corrected, x_raw, y_raw, theta_raw, sin_alpha, cos_alpha;
     double x_vel_, y_vel_, theta_vel_;
     double x_vel_top = 0.96, y_vel_top = 0.96, theta_vel_top = 86;
@@ -165,25 +167,21 @@ private:
         y_raw     = hf_hw_.getRobotAbstract()->measure_global_coordinate.y;
         theta_raw = hf_hw_.getRobotAbstract()->measure_global_coordinate.z/180*M_PI;
 
-        last_x_raw      = x_raw;  // m
-        last_y_raw      = y_raw;
-        last_theta_raw  = theta_raw;
+//        last_x_raw      = x_raw;  // m
+//        last_y_raw      = y_raw;
+//        last_theta_raw  = theta_raw;
+
+        tran_x = x_raw;
+        tran_y = y_raw;
+        rot_theta = theta_raw;
+
+        last_x_processed = 0;
+        last_y_processed = 0;
+        last_theta_processed = 0;
 
         x_ = 0.;
         y_ = 0.;
         theta_ = 0.;
-
-        wheel_pos_[0] = hf_hw_.getRobotAbstract()->measure_motor_mileage.servo1;
-        wheel_pos_[1] = hf_hw_.getRobotAbstract()->measure_motor_mileage.servo2;
-        wheel_pos_[2] = hf_hw_.getRobotAbstract()->measure_motor_mileage.servo3;
-
-        robot_state.battery_voltage = hf_hw_.getRobotAbstract()->system_info.battery_voltage;
-        robot_state.cpu_temperature = hf_hw_.getRobotAbstract()->system_info.cpu_temperature;
-        robot_state.cpu_usage       = hf_hw_.getRobotAbstract()->system_info.cpu_usage;
-        robot_state.system_time     = hf_hw_.getRobotAbstract()->system_info.system_time;
-
-        intf_state_robot.robot_intf = hf_hw_.getRobotAbstract()->measure_intf_mode.intf;
-        intf_state_robot.robot_mode = hf_hw_.getRobotAbstract()->measure_intf_mode.mode;
 
         yaw_imu_init_raw     = hf_hw_.getRobotAbstract()->magnetic_fusion.yaw/180*M_PI;
         pitch_imu_init_raw   = hf_hw_.getRobotAbstract()->magnetic_fusion.pitch/180*M_PI;
@@ -219,22 +217,25 @@ private:
         theta_vel_  =  hf_hw_.getRobotAbstract()->measure_robot_speed.z/180*M_PI;
 
 //        theta_ = hf_hw_.getRobotAbstract()->measure_global_coordinate.z/180*M_PI;
-        theta_raw       = hf_hw_.getRobotAbstract()->measure_global_coordinate.z/180*M_PI;
-        delta_theta     = theta_raw - last_theta_raw;
-        theta_          = theta_ + delta_theta * odom_angle_scale_correction;
-        last_theta_raw  = theta_raw;
-
+        theta_raw  = hf_hw_.getRobotAbstract()->measure_global_coordinate.z/180*M_PI;
         x_raw  = hf_hw_.getRobotAbstract()->measure_global_coordinate.x;
         y_raw  = hf_hw_.getRobotAbstract()->measure_global_coordinate.y;
 
-        delta_x = x_raw - last_x_raw;
-        delta_y = y_raw - last_y_raw;
+        x_processed = cos(rot_theta) * (x_raw - tran_x) + sin(rot_theta) * (y_raw - tran_y);
+        y_processed = -sin(rot_theta) * (x_raw - tran_x) + cos(rot_theta) * (y_raw - tran_y);
+        theta_processed = theta_raw - rot_theta;
 
+        delta_theta  = theta_processed - last_theta_processed;
+        delta_x = x_processed - last_x_processed;
+        delta_y = y_processed - last_y_processed;
+
+        theta_ = theta_ + delta_theta * odom_angle_scale_correction;
         x_ = x_ + delta_x * odom_linear_scale_correction;
         y_ = y_ + delta_y * odom_linear_scale_correction;
 
-        last_x_raw = x_raw;
-        last_y_raw = y_raw;
+        last_x_processed = x_processed;
+        last_y_processed = y_processed;
+        last_theta_processed  = theta_processed;
 
 //        x_     = hf_hw_.getRobotAbstract()->measure_global_coordinate.x;
 //        y_     = hf_hw_.getRobotAbstract()->measure_global_coordinate.y;

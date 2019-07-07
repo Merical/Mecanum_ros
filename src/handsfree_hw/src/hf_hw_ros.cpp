@@ -56,7 +56,8 @@ HF_HW_ros::HF_HW_ros(ros::NodeHandle &nh, std::string url, std::string config_ad
 
     x_ = y_ = theta_ = x_cmd_ = y_cmd_ = theta_cmd_ = 0.0;
     x_vel_ = y_vel_ = theta_vel_ = 0.0;
-    last_x_raw = last_y_raw = last_theta_raw = delta_x = delta_y = delta_theta = 0.0;
+//    last_x_raw = last_y_raw = last_theta_raw = delta_x = delta_y = delta_theta = 0.0;
+    last_x_processed = last_y_processed = last_theta_processed = delta_x = delta_y = delta_theta = 0.0;
     distance = distance_corrected = x_raw = y_raw = theta_raw = 0.0;
     head_servo1_cmd_ = head_servo2_cmd_  =  0.0;
     head_servo1_pos_ = head_servo1_vel_ = head_servo1_eff_ = 0;
