@@ -44,12 +44,12 @@ on Server (add following lines to ~/.bashrc)
 	roslaunch rplidar_ros rplidar.launch
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
 
-## mapping:
+### mapping:
 
 	roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start" (nuc)
 	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
 
-## navigation:
+### navigation:
 
 	roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true (nuc)
 	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
@@ -82,6 +82,22 @@ Extract data/ and weights/ folder to the sc_gui_py3 dir.
 	roslaunch ocean_audio server_ros.launch (nuc)
 	cd sc_gui_py3 (pc)
 	python OB_SC_GUI1.0.py (pc)
+
+
+# Navigation Params:
+### Verison 0:
+
+    sc_2dnav/robot_tf/d435_tf_rtab1.xml:
+        <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera_link" args="0.3 0 0.7 0 0 0 base_link camera_link 50" />
+    sc_2dnav/move_base_config/mecanum/costmap_common_params.yaml:
+        footprint: [[0.1825, 0.17],[-0.1825, 0.17],[-0.1825, -0.17],[0.1825, -0.17]]
+
+### Version 1.0:
+
+    sc_2dnav/robot_tf/d435_tf_rtab1.xml:
+        <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera_link" args="0 0 0.28 0 0 0 base_link camera_link 50" />
+    sc_2dnav/move_base_config/mecanum/costmap_common_params.yaml:
+        footprint: [[0.185, 0.195],[-0.185, 0.195],[-0.185, -0.195],[0.185, -0.195]]
 
 # ps:
 	如果发生realsense节点报错"Frame didn't arrive for 5 seconds",停止realsense节点重新拔插摄像头并重启节点
