@@ -49,12 +49,12 @@ on Server (add following lines to ~/.bashrc)
 	roscd sc_2dnav/map/
 	rosrun map_server map_saver -f your_map_name (on pc)
 	
-<center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/mapping.png" width="50%">
+<img src="https://github.com/Merical/Mecanum_ros/blob/master/images/mapping.png" width="50%" div align="center">
 	
 ### 2.4.2 Navigation:
 
 	roslaunch sc_2dnav demo_move_base_amcl.launch map_name:=your_map_name
-<center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/navigation.png" width="50%">
+<img src="https://github.com/Merical/Mecanum_ros/blob/master/images/navigation.png" width="50%" div align="center">
 	
 ## 2.5 Rtabmap 3D VSLAM:
 
@@ -72,7 +72,7 @@ on Server (add following lines to ~/.bashrc)
 	roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true (nuc)
 	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
 	
-<center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/rtabmap.png" width="50%">
+<img src="https://github.com/Merical/Mecanum_ros/blob/master/images/rtabmap.png" width="50%" div align="center">
 
 ## 2.6 Audio:
 
@@ -86,14 +86,14 @@ on Server (add following lines to ~/.bashrc)
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
 	roslaunch ocean_vision cmt_tracker_mecanum_remote.launch
 	
-<center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/visual_tracking.png" width="50%">
+<img src="https://github.com/Merical/Mecanum_ros/blob/master/images/visual_tracking.png" width="50%" div align="center">
 
 ## 2.8 Simulation(gazebo):
 
 	roslaunch sc_gazebo demo_gazebo_sc0.launch
 	roslaunch sc_gazebo demo_move_base_amcl.launch
 	
-<center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/simulation.png" width="50%">
+<img src="https://github.com/Merical/Mecanum_ros/blob/master/images/simulation.png" width="50%" div align="center">
 	
 ## 2.9 SC_GUI
 ### Python3
