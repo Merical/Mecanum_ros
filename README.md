@@ -49,12 +49,12 @@ on Server (add following lines to ~/.bashrc)
 	roscd sc_2dnav/map/
 	rosrun map_server map_saver -f your_map_name (on pc)
 	
-<div align=center>![mapping](https://github.com/Merical/Mecanum_ros/blob/master/images/mapping.png)
+<div align=center>![mapping](https://github.com/Merical/Mecanum_ros/blob/master/images/mapping.png)<div align=center>
 
 ### 2.4.2 Navigation:
 
 	roslaunch sc_2dnav demo_move_base_amcl.launch map_name:=your_map_name
-<div align=center>![navigation](https://github.com/Merical/Mecanum_ros/blob/master/images/navigation.png)
+<center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/navigation.png" width="50%">
 ## 2.5 Rtabmap 3D VSLAM:
 
 	roslaunch handsfree_hw sc_hw.launch
