@@ -30,6 +30,7 @@ DWAPlannerROS:
   vy_samples: 0
   vtheta_samples: 40
   controller_frequency: 10.0
+#  controller_frequency: 3.0
 
 # Trajectory Scoring Parameters
   path_distance_bias: 32.0

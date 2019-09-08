@@ -1,18 +1,5 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QTableWidgetItem, QMainWindow, QAction, qApp
-from PyQt5 import QtCore
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-import cv2
-import queue
-import socket
-import re
-import json
-import time
-import numpy as np
-from oceanbotech_widgets import *
-
+from PyQt5.QtWidgets import QAction, qApp
+from ob_sc_gui.widgets import *
 
 class MainWindow(QMainWindow):
     def __init__(self):

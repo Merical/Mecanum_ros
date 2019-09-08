@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
          parameters.msg
          vision_rect.msg
          intf_state.msg
+         vision_line.msg
  )
 
 

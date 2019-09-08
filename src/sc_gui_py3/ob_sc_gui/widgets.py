@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QRadioButton, QWidget, QTableWidgetItem, QMainWindow
+from PyQt5.QtWidgets import QFileDialog, QApplication, QRadioButton, QWidget, QTableWidgetItem, QMainWindow
 from PyQt5 import QtCore
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
@@ -11,9 +11,9 @@ import re
 import json
 import time
 import numpy as np
-from models import *
+from ob_sc_gui.models import *
 
-Debug_flag = False
+Debug_flag = True
 Debug_Send_flag = True
 Debug_Key_flag = False
 Debug_video = False
@@ -134,7 +134,7 @@ class Window_pad(QWidget):
         data_table = QtWidgets.QTableWidget()
         data_table.setMaximumSize(300, 400)
         data_table.setColumnCount(1)
-        data_table.setRowCount(7)
+        data_table.setRowCount(8)
         col_name = [
             'Data',
 
@@ -144,15 +144,16 @@ class Window_pad(QWidget):
             'GER',
             'PID',
             'SONA1',
-            'SONA2',
             'SONA3',
-            'SONA4',
+            'SONA5',
+            'SONA7',
+            'SONA8',
             'TRACK_SENSOR',
         ]
         data_table.setVerticalHeaderLabels(row_name)
         return data_table
 
-    def update_item_data(self, x,y,z,a,b,c,d):
+    def update_item_data(self, x,y,z,a,b,c,d,e):
         self.data_table.setItem(0, 0, QTableWidgetItem(x))
         self.data_table.setItem(1, 0, QTableWidgetItem(y))
         self.data_table.setItem(2, 0, QTableWidgetItem(z))
@@ -160,6 +161,7 @@ class Window_pad(QWidget):
         self.data_table.setItem(4, 0, QTableWidgetItem(b))
         self.data_table.setItem(5, 0, QTableWidgetItem(c))
         self.data_table.setItem(6, 0, QTableWidgetItem(d))
+        self.data_table.setItem(7, 0, QTableWidgetItem(e))
 
     def keyPressEvent(self, event):
         if not self.track_mode:
@@ -329,19 +331,19 @@ class TrackThread(ThreadTemplate):
                         break
                     elif sensor[l] == 0:
                         if count > 0:
-                            command_queue.put('command_type:13')
-                            if Debug_track: print('LCH: foward & turn right')
-                        else:
-                            command_queue.put('command_type:11')
-                            if Debug_track: print('LCH: foward & turn right hard')
-                        break
-                    elif sensor[r] == 0:
-                        if count > 0:
                             command_queue.put('command_type:12')
                             if Debug_track: print('LCH: foward & turn left')
                         else:
                             command_queue.put('command_type:14')
                             if Debug_track: print('LCH: foward & turn left hard')
+                        break
+                    elif sensor[r] == 0:
+                        if count > 0:
+                            command_queue.put('command_type:13')
+                            if Debug_track: print('LCH: foward & turn right')
+                        else:
+                            command_queue.put('command_type:11')
+                            if Debug_track: print('LCH: foward & turn right hard')
                         break
 
                     l += 1
@@ -459,11 +461,40 @@ class AnalyzeCommand(ThreadTemplate):
 
 
 class UpdateData(ThreadTemplate):
-    update_date = pyqtSignal(str,str,str,str,str,str,str)
+    update_date = pyqtSignal(str,str,str,str,str,str,str,str)
 
     def __init__(self):
         super().__init__()
         # self.sock = sock
+
+    def CutIntactMessage(self, message, depth=2):
+        if len(message) == 0:
+            return ''
+        begin = None
+        end = None
+        count = 0
+        max = 0
+        index = 0
+        output = ''
+        while index < len(message):
+            if message[index] == "{":
+                if count == 0:
+                    begin = index
+                count += 1
+            elif message[index] == "}" and begin is not None:
+                count -= 1
+                if count == 0:
+                    end = index
+            index += 1
+            max = count if count > max else max
+            if begin is not None and end is not None and count == 0:
+                if max == depth:
+                    output = message[begin:end + 1]
+                else:
+                    begin = None
+                    end = None
+
+        return output
 
     def run(self):
         global ROBOT_CONDITION
@@ -477,42 +508,31 @@ class UpdateData(ThreadTemplate):
             if recv_data:
                 if Debug_flag: print('LCH: Recv Data:', recv_data)
                 recv_message = recv_data.decode('utf-8')
-                recv_message = recv_message.replace('\r\n', '')
-                recv_message = recv_message.replace(',"CTRL":NONE', '')
-                recv_message = recv_message.replace(',"CTRL":JSON', '')
-                if Debug_flag: print('LCH: Recv Message:', recv_message)
-                pattern = re.compile(r'\{"RPT".*?\}\}')
-                recv_message_slices = re.findall(pattern, recv_message)
-                if len(recv_message_slices) > 0:
-                    recv_message_slice = recv_message_slices[0]
-                    if Debug_flag: print('LCH: Recv Message Slice:', recv_message_slice)
-                    if recv_message_slice:
-                        trc = re.findall(re.compile(r'\"TRCSEN":.*?,'), recv_message)[0]
-                        redunce = re.findall(re.compile(r'\"WZ":.*?,'), recv_message)[0]
-                        print(recv_message_slice)
-                        recv_message_slice = recv_message_slice.replace(trc, '')
-                        recv_message_slice = recv_message_slice.replace(redunce, '')
-                        stringData = json.loads(recv_message_slice)
-                        stringData['RPT']['TRCSEN'] = int(re.findall(re.compile(r':(.*),'), trc)[0], base=16)
-                        stringData['RPT']['TRCSEN_Data'] = [int(i) for i in '{0:08b}'.format(stringData['RPT']['TRCSEN'])][3:]
-                        if Debug_track: print('LCH: recved track sensor data is ', stringData['RPT']['TRCSEN_Data'], ' the trcsen is ', stringData['RPT']['TRCSEN'])
-                        ROBOT_CONDITION = stringData['RPT'].copy()
-                        if Debug_flag: print('LCH: StringData:', stringData)
-                        cnt = stringData['RPT']['GER']
-                        cnt1 = stringData['RPT']['PID']
-                        cnt2 = stringData['RPT']['SONA1']
-                        cnt3 = stringData['RPT']['SONA2']
-                        cnt4 = stringData['RPT']['SONA3']
-                        cnt5 = stringData['RPT']['SONA4']
-                        cnt6 = stringData['RPT']['TRCSEN_Data']
 
-                        if Debug_flag: print('LCH: Updating...')
-                        self.update_date.emit(str(cnt), str(cnt1), str(cnt2), str(cnt3), str(cnt4), str(cnt5), str(cnt6))
-                        if Debug_flag: print('LCH: Update done')
-                        time.sleep(0.005)
-                    else:
-                        time.sleep(0.005)
-                        continue
+                if Debug_flag: print('LCH: Recv Message:', recv_message)
+                recv_message_slice = self.CutIntactMessage(recv_message)
+                if len(recv_message_slice) > 0:
+                    stringData = json.loads(recv_message_slice)
+                    stringData['RPT']['TRCSEN'] = int(stringData['RPT']['TRCSEN'], base=16)
+                    stringData['RPT']['TRCSEN_Data'] = [int(i) for i in '{0:08b}'.format(stringData['RPT']['TRCSEN'])][3:]
+
+                    # if Debug_track: print('LCH: recved track sensor data is ', stringData['RPT']['TRCSEN_Data'], ' the trcsen is ', stringData['RPT']['TRCSEN'])
+                    if Debug_track: print('LCH: recved track sensor data is ', stringData['RPT']['TRCSEN'])
+                    ROBOT_CONDITION = stringData['RPT'].copy()
+                    if Debug_flag: print('LCH: StringData:', stringData)
+                    cnt0 = stringData['RPT']['GER']
+                    cnt1 = stringData['RPT']['PID']
+                    cnt2 = stringData['RPT']['SONA1']
+                    cnt3 = stringData['RPT']['SONA3']
+                    cnt4 = stringData['RPT']['SONA5']
+                    cnt5 = stringData['RPT']['SONA7']
+                    cnt6 = stringData['RPT']['SONA8']
+                    cnt7 = stringData['RPT']['TRCSEN_Data']
+
+                    if Debug_flag: print('LCH: Updating...')
+                    self.update_date.emit(str(cnt0), str(cnt1), str(cnt2), str(cnt3), str(cnt4), str(cnt5), str(cnt6), str(cnt7))
+                    if Debug_flag: print('LCH: Update done')
+                    time.sleep(0.005)
                 else:
                     time.sleep(0.005)
                     continue
@@ -539,6 +559,7 @@ class Window_ros(QWidget):
             {"ROS": {"platform": 0, "lidar": 0, "realsense": 0, "cmt": 0, "video": 0},
              "CMD": {"linear_x": 0, "linear_y": 0, "angular_z": 0},
              "INI": {"br": (0, 0), "tl": (0, 0)},
+             "SHUTDOWN": 0,
              "EXIT": 0}
         }
         self.cam_show_flag = True
@@ -608,6 +629,11 @@ class Window_ros(QWidget):
         self.button_initalize_cmt.setBaseSize(200, 50)
         fun_button.addWidget(self.button_initalize_cmt)
         self.button_initalize_cmt.clicked.connect(self.open_init_on_click)
+
+        self.button_shutdown = QtWidgets.QPushButton(u'Shutdown')
+        self.button_shutdown.setBaseSize(200, 50)
+        fun_button.addWidget(self.button_shutdown)
+        self.button_shutdown.clicked.connect(self.shutdown_server_on_click)
 
         button_close = QtWidgets.QPushButton(u'Quit')
         button_close.setBaseSize(200, 50)
@@ -736,6 +762,15 @@ class Window_ros(QWidget):
         else:
             pass
 
+    def shutdown_server_on_click(self):
+        if Debug_cmt: print('LCH: Server shutdown called')
+        if self.connected:
+            self.communication['COM']['SHUTDOWN'] = 1
+            command_queue.put(self.communication)
+        else:
+            pass
+        time.sleep(0.5)
+        self.close_ros_on_click()
 
     def show_img(self, frame):
         if Debug_video: print('LCH: Main thread show img.')
@@ -919,8 +954,10 @@ class Window_dl(QWidget):
 
         self.mainWindow = mainWindow
 
-        self.img_cols = 320
-        self.img_rows = 240
+        # self.img_cols = 320
+        # self.img_rows = 240
+        self.img_cols = 640
+        self.img_rows = 480
 
         self.image = None
         self.detector = None

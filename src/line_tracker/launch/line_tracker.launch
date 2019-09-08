@@ -1,0 +1,36 @@
+<launch>
+    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+        <param name="video_device" value="/dev/video1" />
+        <param name="image_width" value="640" />
+        <param name="image_height" value="480" />
+        <param name="pixel_format" value="yuyv" />
+        <param name="camera_frame_id" value="usb_cam" />
+        <param name="io_method" value="mmap"/>
+    </node>
+
+    <node name="line_tracker" pkg="line_tracker" type="line_tracker_node" output="screen">
+    </node>
+
+    <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+        <remap from="image" to="/ob_vision/line_tracker/color"/>
+        <param name="autosize" value="true" />
+    </node>
+
+    <node name="line_action" pkg="line_tracker" type="line_action.py" output="screen">
+        <remap from="/cmd_vel" to="/mobile_base/mobile_base_controller/cmd_vel"/>
+        <rosparam>
+            rate: 20
+            forward_speed: 0.5
+            max_angular_speed: 2.0
+            min_angular_speed: 0.1
+            max_linear_speed: 0.8
+            min_linear_speed: 0.1
+            shift_pid_value: [0.1, 0, 0.5]
+            rotate_pid_value: [1, 0, 0.5]
+            translate_dead_zone: 10
+            rotate_dead_zone: 10
+        </rosparam>
+
+    </node>
+
+</launch>
