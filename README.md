@@ -108,6 +108,7 @@ Extract data/ and weights/ folder to the sc_gui_py3 dir.
 
 ## 2.10 Time Synchronization
 ```
+$ sudo apt-get install -y ntpdate
 $ sudo ntpdate -u SERVER_IP
 ```
 
