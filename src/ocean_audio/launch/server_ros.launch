@@ -1,5 +1,5 @@
 <launch>
-    <node pkg="ocean_audio" type="server_ros_exit.py" name="server_ros_exit"  output="screen">
+    <node pkg="ocean_audio" type="server_ros_shutdown.py" name="server_ros_shutdown"  output="screen">
         <remap from="server_ros/cmd_vel" to="/mobile_base/mobile_base_controller/cmd_vel" />
 	<remap from="server_ros/initial_rect" to="ob_vision/follower/initial_rect" />
     </node>

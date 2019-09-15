@@ -4,6 +4,7 @@
 import socket
 import re
 import sys
+import os
 import rospy
 import time
 import Queue
@@ -16,7 +17,7 @@ from geometry_msgs.msg import Twist
 
 def CutIntactMessage(message, depth=3):
     if len(message) == 0:
-        return 'fail'
+        return ''
     begin = None
     end = None
     count = 0
@@ -46,6 +47,7 @@ def CutIntactMessage(message, depth=3):
 def communication_job():
     global cmd_queue
     global init_queue
+    global exit_flag
     global shutdown_flag
     # global clientsocket
 
@@ -58,7 +60,7 @@ def communication_job():
     serverSocket, addr = sk.accept()
     print('LCH: Socket initialized, processes begin')
 
-    while (not rospy.is_shutdown()) and (not shutdown_flag):
+    while (not rospy.is_shutdown()) and (not exit_flag):
 
         data = serverSocket.recv(1024)
         message = data.decode()
@@ -69,8 +71,10 @@ def communication_job():
 
             if len(slice) > 0:
                 message_dict = json.loads(slice)
-                if message_dict['COM']['EXIT'] == 1:
+                if message_dict['COM']['EXIT'] == 1 or message_dict['COM']['SHUTDOWN'] == 1:
+                    exit_flag = True
                     shutdown_flag = True
+                    print 'the exit_flag is ',exit_flag
                     print 'the shutdown_flag is ',shutdown_flag
                     break
                 for _ in range(3):
@@ -87,7 +91,7 @@ def communication_job():
 def initialize_job():
     global init_queue
     global init_pub
-    global shutdown_flag
+    global exit_flag
 
     def get_rect(rect, cmd):
         rect.topleft_x = cmd['tl'][0]
@@ -102,7 +106,7 @@ def initialize_job():
     cmd = None
     rate = rospy.Rate(10)
 
-    while (not rospy.is_shutdown()) and (not shutdown_flag):
+    while (not rospy.is_shutdown()) and (not exit_flag):
         if len(init_queue) > 0:
             while len(init_queue) > 0:
                 cmd = init_queue.popleft()
@@ -119,7 +123,7 @@ def initialize_job():
 def motion_job():
     global cmd_queue
     global pub
-    global shutdown_flag
+    global exit_flag
 
     def get_twist(twist, cmd):
 
@@ -135,7 +139,7 @@ def motion_job():
     cmd = None
     rate = rospy.Rate(10)
 
-    while (not rospy.is_shutdown()) and (not shutdown_flag):
+    while (not rospy.is_shutdown()) and (not exit_flag):
         if len(cmd_queue) > 0:
             while len(cmd_queue) > 0:
                 cmd = cmd_queue.popleft()
@@ -163,31 +167,32 @@ def motion_job():
 
 def node_job():
     global node_queue
+    global exit_flag
     global shutdown_flag
 
     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
     roslaunch.configure_logging(uuid)
     platform_launch = roslaunch.parent.ROSLaunchParent(
-        uuid, ["/home/robot/ros_workspace/SC0_ws/src/handsfree_hw/launch/sc_hw.launch"]
+        uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/handsfree_hw/launch/sc_hw.launch"]
     )
     realsense_launch = roslaunch.parent.ROSLaunchParent(
-        uuid, ["/home/robot/ros_workspace/SC0_ws/src/realsense-2.1.0/realsense2_camera/launch/rs_camera.launch"]
+        uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/realsense-2.1.0/realsense2_camera/launch/rs_camera.launch"]
     )
     lidar_launch = roslaunch.parent.ROSLaunchParent(
-        uuid, ["/home/robot/ros_workspace/SC0_ws/src/rplidar_ros/launch/rplidar.launch"]
+        uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/rplidar_ros/launch/rplidar.launch"]
     )
     cmt_launch = roslaunch.parent.ROSLaunchParent(
-        uuid, ["/home/robot/ros_workspace/SC0_ws/src/ocean_vision/launch/cmt_tracker_mecanum_remote.launch"]
+        uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/ocean_vision/launch/cmt_tracker_mecanum_remote.launch"]
     )
     video_launch = roslaunch.parent.ROSLaunchParent(
-        uuid, ["/home/robot/ros_workspace/SC0_ws/src/ocean_vision/launch/video_transfor.launch"]
+        uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/ocean_vision/launch/video_transfor.launch"]
     )
     print('LCH: the launch initialized')
 
     last_state = {'realsense': 0, 'platform': 0, 'lidar': 0, 'cmt': 0}
     state = None
 
-    while (not rospy.is_shutdown()) and (not shutdown_flag):
+    while (not rospy.is_shutdown()) and (not exit_flag):
         if len(node_queue) > 0:
             while len(node_queue) > 0:
                 state = node_queue.popleft()
@@ -233,6 +238,8 @@ def node_job():
         # time.sleep(1)
 
     print 'node_job drop out the loop'
+    if shutdown_flag:
+        os.system("echo %s | sudo -S shutdown -h now" % sudopw)
     realsense_launch.shutdown()
     cmt_launch.shutdown()
     lidar_launch.shutdown()
@@ -242,7 +249,10 @@ def node_job():
 
 if __name__ == '__main__':
     print('ocean_gui_communication begin')
+    sudopw = "123456789o"
+    exit_flag = False
     shutdown_flag = False
+
     cmd_queue = Queue.deque()
     node_queue = Queue.deque()
     init_queue = Queue.deque()
