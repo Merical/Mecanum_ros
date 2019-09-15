@@ -106,6 +106,10 @@ Extract data/ and weights/ folder to the sc_gui_py3 dir.
 	cd sc_gui_py3 (pc)
 	python OB_SC_GUI1.0.py (pc)
 
+## 2.10 Time Synchronization
+```
+$ sudo ntpdate -u SERVER_IP
+```
 
 # 3 ROS Packakges
 ## 3.1 handsfree_hw
