@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INIT_DIR = $(pwd)
+INIT_DIR=$(pwd)
 
 echo "export HANDSFREE_ROBOT_MODEL=stone_v2" >> ~/.bashrc 
 echo "export SC_ROBOT_MODEL=mecanum" >> ~/.bashrc 
@@ -12,7 +12,7 @@ mkdir ros_workspace
 cd ros_workspace
 mkdir SC0_ws
 cd SC0_ws
-CATKIN_DIR = $(pwd)
+CATKIN_DIR=$(pwd)
 cp -r ${INIT_DIR}/src ./
 
 echo "123456789o" | sudo -S apt-get update
