@@ -2,6 +2,8 @@
 
 INIT_DIR = $(pwd)
 
+echo "export HANDSFREE_ROBOT_MODEL=stone_v2" >> ~/.bashrc 
+echo "export SC_ROBOT_MODEL=mecanum" >> ~/.bashrc 
 echo "export ROS_MASTER_URI=http://192.168.10.11:11311" >> ~/.bashrc 
 echo "export ROS_HOSTNAME=192.168.10.11" >> ~/.bashrc 
 
@@ -9,10 +11,11 @@ cd ~/
 mkdir ros_workspace
 cd ros_workspace
 mkdir SC0_ws
+cd SC0_ws
 CATKIN_DIR = $(pwd)
 cp -r ${INIT_DIR}/src ./
 
-echo "123456789o" | sudo apt-get update
+echo "123456789o" | sudo -S apt-get update
 sudo cp src/Documentation/sc_udev/* /ect/udev/rules.d/
 sudo /etc/init.d/udev restart
 
