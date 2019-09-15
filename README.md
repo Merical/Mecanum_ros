@@ -16,8 +16,10 @@ Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发�
 
 ## 2.1 Preparing&Setup
 
-    # copy the udev rules in src/Documentation/sc_udev to /etc/udev/rules.d
-    sh setup_environment.sh
+    # On server NUC
+    bash setup_environment_server.sh
+    # On PC
+    bash setup_from_scratch.sh # Only do this step if you didn't setup your pc envirnment at all. Manually setup is recommanded.
 
 ## 2.2 Complie&Build:
     # put the Mecanum_ros/src inside your workspace, for example: ~/ros_workspace/SC0_ws
