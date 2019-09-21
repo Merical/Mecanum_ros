@@ -274,7 +274,7 @@ Oceanbotech视觉跟踪ros包，使用CMT算法与pid控制算法实现智能移
 ## 3.5 sc_2dnav
 ### 1) Overview
 Oceanbotech二维导航功能包\
-使用[gmapping](http://wiki.ros.org/gmapping/)算法进行地图简历\
+使用[gmapping](http://wiki.ros.org/gmapping/)算法进行地图建立\
 使用[move_base](http://wiki.ros.org/move_base/)和[amcl](http://wiki.ros.org/amcl)进行实时导航\
 使用[rtabmap](http://wiki.ros.org/rtabmap_ros)进行2维和3维的建图和导航
 
