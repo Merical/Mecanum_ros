@@ -67,7 +67,3 @@ catkin_make
 
 echo "source /home/obt-sc/ros_workspace/SC0_ws/devel/setup.bash" >> ~/.bashrc 
 source ~/.bashrc
-
-sudo echo "server 127.127.1.0" >> /etc/ntp.conf
-sudo echo "fudge 127.127.1.0 stratum 5" >> /etc/ntp.conf
-systemctl restart ntpdate.service

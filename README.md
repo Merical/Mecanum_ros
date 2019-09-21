@@ -17,9 +17,15 @@ Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发�
 ## 2.1 Preparing&Setup
 
     # On server NUC
-    bash setup_environment_server.sh
+    bash setup_from_scratch.sh
+
+    sudo su
+    sudo echo "server 127.127.1.0" >> /etc/ntp.conf
+    sudo echo "fudge 127.127.1.0 stratum 5" >> /etc/ntp.conf
+    systemctl restart ntp.service
+
     # On PC
-    bash setup_from_scratch.sh # Only do this step if you didn't setup your pc envirnment at all. Manual setup is recommanded.
+    bash setup_pc.sh # Only do this step if you didn't setup your pc envirnment at all. Manual setup is recommanded.
 
 ## 2.2 Complie&Build:
     # put the Mecanum_ros/src inside your workspace, for example: ~/ros_workspace/SC0_ws
