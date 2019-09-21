@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="ocean_audio" type="pad_shutdown.py" name="pad_shutdown"  output="screen"/>
+</launch>
