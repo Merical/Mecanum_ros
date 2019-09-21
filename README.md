@@ -106,7 +106,7 @@ Extract data/ and weights/ folder to the sc_gui_py3 dir.
 	# connect the robot wifi
 	roslaunch ocean_audio server_ros.launch (nuc)
 	cd sc_gui_py3 (pc)
-	python OB_SC_GUI1.0.py (pc)
+	python gui.py (pc)
 
 ## 2.10 Time Synchronization
 ```
