@@ -20,8 +20,8 @@ Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发�
     bash setup_from_scratch.sh
 
     sudo su
-    sudo echo "server 127.127.1.0" >> /etc/ntp.conf
-    sudo echo "fudge 127.127.1.0 stratum 5" >> /etc/ntp.conf
+    echo "server 127.127.1.0" >> /etc/ntp.conf
+    echo "fudge 127.127.1.0 stratum 5" >> /etc/ntp.conf
     systemctl restart ntp.service
 
     # On PC
