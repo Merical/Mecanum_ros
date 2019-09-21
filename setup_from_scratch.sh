@@ -54,7 +54,7 @@ cd SC0_ws
 CATKIN_DIR=$(pwd)
 cp -r ${INIT_DIR}/src ./
 
-sudo cp src/Documentation/sc_udev/* /ect/udev/rules.d/
+sudo cp src/Documentation/sc_udev/* /etc/udev/rules.d/
 sudo /etc/init.d/udev restart
 
 sudo usermod -a -G dialout $USER
