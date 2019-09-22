@@ -25,6 +25,6 @@
         rotate_pid_value: [2, 1, 0.2, 0.15]
         motion_mode: 0
     </rosparam>
-    <param name="config_file_path" value="($find ocean_vision)/config/pyconfig.yaml"/>
+    <param name="config_file_path" value="$(find ocean_vision)/config/pyconfig.yaml"/>
   </node>
 </launch>

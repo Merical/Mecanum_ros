@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     {
         cft.chatter_pub.publish(cft.CMTmsg);
         cft.color_pub.publish(cft.color_msg);
-        cv::startWindowThread();
+//        cv::startWindowThread();
 //        cout << "LCH: the ColorFrame is " << cft.ColorFrame << endl;
 //        cv::imshow(COLOR_WINDOW, cft.ColorFrame);
 //        cv::waitKey(1);
