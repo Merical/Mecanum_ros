@@ -34,3 +34,13 @@ add_executable (cmt_ros src/common.cpp src/gui.cpp src/cmt_ros.cpp
     src/fastcluster.cpp)
 target_link_libraries(cmt_ros ${OpenCV_LIBS} ${catkin_LIBRARIES})
 add_dependencies(cmt_ros ocean_vision_generate_messages_cpp)
+
+add_executable (cmt_ros_server src/common.cpp src/gui.cpp src/cmt_ros_server.cpp
+        src/CMT.cpp src/Consensus.cpp src/Fusion.cpp src/Matcher.cpp src/Tracker.cpp
+        src/fastcluster.cpp)
+target_link_libraries(cmt_ros_server ${OpenCV_LIBS} ${catkin_LIBRARIES})
+add_dependencies(cmt_ros_server ocean_vision_generate_messages_cpp)
+
+add_executable (ros_rgbd src/ros_rgbd.cpp)
+target_link_libraries(ros_rgbd ${OpenCV_LIBS} ${catkin_LIBRARIES})
+add_dependencies(ros_rgbd ocean_vision_generate_messages_cpp)
