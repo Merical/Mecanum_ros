@@ -85,6 +85,7 @@ public:
     void run();
     void getTopicRect(const sc_msgs::vision_rect& msg);
     int display_ros_copy(Mat im, const string win_name);
+    void ros_copy(Mat im, const string win_name);
 
 
 };
