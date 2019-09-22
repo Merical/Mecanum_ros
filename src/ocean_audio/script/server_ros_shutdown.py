@@ -73,7 +73,8 @@ def communication_job():
                 message_dict = json.loads(slice)
                 if message_dict['COM']['EXIT'] == 1 or message_dict['COM']['SHUTDOWN'] == 1:
                     exit_flag = True
-                    shutdown_flag = True
+                    if message_dict['COM']['SHUTDOWN'] == 1:
+                        shutdown_flag = True
                     print 'the exit_flag is ',exit_flag
                     print 'the shutdown_flag is ',shutdown_flag
                     break
