@@ -104,6 +104,9 @@ void CmtFrameTrans::depthGrab(const sensor_msgs::ImageConstPtr& msg) {
 int CmtFrameTrans::display_ros_copy(Mat im, const string win_name) {
     //Visualize the output
     //It is ok to draw on im itself, as CMT only uses the grayscale image
+    cv::namedWindow(COLOR_WINDOW, CV_WINDOW_NORMAL);
+    cv::namedWindow(DEPTH_WINDOW, CV_WINDOW_NORMAL);
+
     if (cmt.has_result) {
         for (size_t i = 0; i < cmt.points_active.size(); i++) {
             circle(im, cmt.points_active[i], 2, Scalar(0, 255, 0));
