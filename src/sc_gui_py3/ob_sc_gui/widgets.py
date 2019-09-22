@@ -788,9 +788,12 @@ class Window_ros(QWidget):
                 self.sock = 0
                 ONLINE_MODE = False
             else:
-                self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 创建一个socket
-                self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                self.sock.connect((ip_address, 8899))  # 建立连接
+                try:
+                    self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 创建一个socket
+                    self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    self.sock.connect((ip_address, 8899))  # 建立连接
+                except:
+                    return
                 ONLINE_MODE = True
 
             print('LCH: the sock is set')
