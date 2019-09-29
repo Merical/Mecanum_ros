@@ -1,6 +1,4 @@
-<!--  -->
-
-<launch> 
+<launch>
   <arg name="initial_pose_x" default="0"/>
   <arg name="initial_pose_y" default="0"/>
   <arg name="initial_pose_a" default="0"/>

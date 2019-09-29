@@ -53,14 +53,14 @@
         </link>
 
         <joint name="base_joint" type="fixed">
-            <origin xyz="0 0 -0.05325" rpy="0 0 0" />
+            <origin xyz="0 0 -0.0288" rpy="0 0 0" />
             <parent link="base_link"/>
             <child link="base_footprint" />
         </joint>
 
         <joint name="join_left_front" type="fixed">
             <!--<origin xyz="0.6 0 0.8" rpy="0 0 0"/>-->
-            <origin xyz="0.1825 0.17 0.023" rpy="0 0 1.57"/>
+            <origin xyz="0.1825 0.195 0.049" rpy="0 0 1.57"/>
             <parent link="base_link"/>
             <child link="link_left_front"/>
             <axis xyz="1 0 0" />
@@ -96,7 +96,7 @@
 
         <joint name="join_right_front" type="fixed">
             <!--<origin xyz="0.6 0 0.8" rpy="0 0 0"/>-->
-            <origin xyz="0.1825 -0.17 0.023" rpy="0 0 1.57"/>
+            <origin xyz="0.1825 -0.195 0.049" rpy="0 0 1.57"/>
             <parent link="base_link"/>
             <child link="link_right_front"/>
             <axis xyz="1 0 0" />
@@ -132,7 +132,7 @@
 
         <joint name="join_left_back" type="fixed">
             <!--<origin xyz="0.6 0 0.8" rpy="0 0 0"/>-->
-            <origin xyz="-0.1825 0.17 0.023" rpy="0 0 1.57"/>
+            <origin xyz="-0.1825 0.195 0.049" rpy="0 0 1.57"/>
             <parent link="base_link"/>
             <child link="link_left_back"/>
             <axis xyz="1 0 0" />
@@ -170,7 +170,7 @@
 
         <joint name="join_right_back" type="fixed">
             <!--<origin xyz="0.6 0 0.8" rpy="0 0 0"/>-->
-            <origin xyz="-0.1825 -0.17 0.023" rpy="0 0 1.57"/>
+            <origin xyz="-0.1825 -0.195 0.049" rpy="0 0 1.57"/>
             <parent link="base_link"/>
             <child link="link_right_back"/>
             <axis xyz="1 0 0" />
@@ -222,7 +222,7 @@
         </link>
 
         <joint name="join_laser" type="fixed">
-            <origin xyz="0.2125 0 0.111" rpy="0 0 0" />
+            <origin xyz="0.2933 0 0.255" rpy="0 0 0" />
             <parent link="base_link"/>
             <child link="link_laser" />
         </joint>
@@ -244,7 +244,7 @@
         </link>
 
         <joint name="join_camera" type="fixed">
-            <origin xyz="0.2125 0 0.542" rpy="0 0 0" />
+            <origin xyz="0 0 0.27679" rpy="0 0 0" />
             <parent link="base_link"/>
             <child link="link_camera" />
         </joint>

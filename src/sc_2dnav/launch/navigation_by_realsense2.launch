@@ -20,7 +20,7 @@
     <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/> 
     <arg name="map_name" value="$(arg map_name)"/>
-  </include>
+  </include
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sc_2dnav)/rviz/HANDSFREE_Robot.rviz" />
 
