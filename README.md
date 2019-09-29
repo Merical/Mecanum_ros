@@ -66,7 +66,8 @@ on Server (add following lines to ~/.bashrc)
 	
 ### 2.4.2 Navigation:
 
-	roslaunch sc_2dnav demo_move_base_amcl.launch map_name:=your_map_name
+	roslaunch sc_2dnav demo_move_base_amcl_server.launch map_name:=your_map_name (on nuc)
+	roslaunch sc_2dnav demo_move_base_amcl_client.launch (on pc)
 <div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/navigation.png" width=240 height=320></div>
 	
 ## 2.5 Rtabmap 3D VSLAM:
