@@ -98,7 +98,7 @@ on Server (add following lines to ~/.bashrc)
 
 	roslaunch handsfree_hw sc_hw.launch
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
-	roslaunch ocean_vision cmt_tracker_mecanum_remote.launch
+	roslaunch ocean_vision cmt_tracker_mecanum.launch
 	
 <div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/visual_tracking.png" width=320 height=240></div>
 
