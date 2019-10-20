@@ -26,7 +26,7 @@ Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发�
     systemctl restart ntp.service
     
     # add the following line to /etc/rc.local, before the "exit 0" line
-    bash /home/obt-sc/ros_workspace/SC0_ws/src/ocean_audio/script/server_ros_bringup.sh
+    bash /home/obt-sc/ros_workspace/SC0_ws/src/ocean_audio/script/server_bringup.sh
 
     # On PC
     bash setup_pc.sh # Only do this step if you didn't setup your pc envirnment at all. Manual setup is recommanded.

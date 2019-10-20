@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find ocean_audio)/launch/server_ros.launch"/>
+    <include file="$(find ocean_audio)/launch/server_pad.launch"/>
+</launch>

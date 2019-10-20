@@ -45,22 +45,14 @@ def CutIntactMessage(message, depth=1):
 
 def communication_job():
     global shutdown_flag
-    # global clientsocket
+    global running_flag
+    global serverSocket
 
-    ip_port = ('192.168.10.11', 8900)
-    sk = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    sk.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sk.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-    sk.bind(ip_port)
-    sk.listen(5)
-    serverSocket, addr = sk.accept()
-    print('LCH: Socket initialized, processes begin')
-
-    while True:
+    while running_flag:
         data = serverSocket.recv(1024)
         message = data.decode()
         if len(message) > 0:
-#print 'LCH: recv done, message is ', message
+            print 'LCH: recv done, message is ', message
 
             slice = CutIntactMessage(message)
 
@@ -69,10 +61,7 @@ def communication_job():
                 for _ in range(3):
                     node_queue.append(message_dict)
 
-        response = json.dumps({'SHUTDOWN': shutdown_flag})
-#        print('Reponse is ', response)
-        serverSocket.send(response.encode('utf-8'))
-        time.sleep(0.005)
+        time.sleep(0.5)
     print 'communication_job drop out the loop'
     time.sleep(0.5)
     serverSocket.close()
@@ -82,18 +71,30 @@ def communication_job():
 def node_job():
     global node_queue
     global shutdown_flag
+    global serverSocket
+    global running_flag
 
-    while True:
+    while running_flag:
         if len(node_queue) > 0:
             while len(node_queue) > 0:
                 state = node_queue.popleft()
             
             if state['SHUTDOWN'] == 1:
-                shutdown_flag = True
+                shutdown_flag = 1
                 time.sleep(0.5)
+                response = json.dumps({'SHUTDOWN': shutdown_flag})
+#print('Reponse is ', response)
+                serverSocket.send(response.encode('utf-8'))
                 break
 
-        time.sleep(0.005)
+        response = json.dumps({'SHUTDOWN': shutdown_flag})
+#print('Reponse is ', response)
+        try:
+            serverSocket.send(response.encode('utf-8'))
+        except:
+            running_flag = False
+            break
+        time.sleep(0.5)
 
     print 'node_job drop out the loop'
     if shutdown_flag:
@@ -104,7 +105,17 @@ def node_job():
 if __name__ == '__main__':
     print('ocean_gui_communication begin')
     sudopw = "123456789o"
-    shutdown_flag = 1
+    shutdown_flag = 0
+    running_flag = True
+
+    ip_port = ('192.168.10.11', 8900)
+    sk = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    sk.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sk.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+    sk.bind(ip_port)
+    sk.listen(5)
+    serverSocket, addr = sk.accept()
+    print('LCH: Socket initialized, processes begin')
 
     node_queue = Queue.deque()
     communication_process = threading.Thread(target=communication_job)
