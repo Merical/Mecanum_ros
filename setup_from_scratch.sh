@@ -3,8 +3,21 @@
 cd ~/
 mkdir Sources
 echo "123456789o" | sudo -S apt-get update
-sudo apt-get upgrade
 sudo apt-get install -y git wget build-essential cmake tar ntpdate
+
+cd ~/
+git clone https://github.com/Merical/Mecanum_ros.git
+cd Mecanum_ros
+GIT_DIR=$(pwd)
+
+echo "123456789o" | sudo mv /etc/apt/sources.list /etc/apt/sources.list.org
+sudo cp ./sources.list /etc/apt/sources.list
+echo "123456789o" | sudo -S apt-get update
+sudo apt-get upgrade -y
+
+sudo apt-get install libgl1-mesa-dev 
+sudo apt-get install libglew-dev libsdl2-dev libsdl2-image-dev libglm-dev libfreetype6-dev 
+sudo apt-get install libglfw3-dev libglfw3
 sudo apt-get install -y libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
 sudo apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
@@ -39,10 +52,6 @@ rosdep update
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 
-cd ~/
-git clone https://github.com/Merical/Mecanum_ros.git
-cd Mecanum_ros
-GIT_DIR=$(pwd)
 
 echo "export HANDSFREE_ROBOT_MODEL=stone_v2" >> ~/.bashrc 
 echo "export SC_ROBOT_MODEL=mecanum" >> ~/.bashrc 
@@ -55,7 +64,7 @@ cd ros_workspace
 mkdir SC0_ws
 cd SC0_ws
 CATKIN_DIR=$(pwd)
-cp -r ${INIT_DIR}/src ./
+cp -r ${GIT_DIR}/src ./
 
 sudo cp src/Documentation/sc_udev/* /etc/udev/rules.d/
 sudo /etc/init.d/udev restart
