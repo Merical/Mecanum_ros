@@ -3,7 +3,10 @@
 cd ~/
 mkdir Sources
 echo "123456789o" | sudo -S apt-get update
+sudo apt-get upgrade
 sudo apt-get install -y git wget build-essential cmake tar ntpdate
+sudo apt-get install -y libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+sudo apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
 cd ~/Downloads
 wget "https://github.com/IntelRealSense/librealsense/archive/v2.16.1.tar.gz"
