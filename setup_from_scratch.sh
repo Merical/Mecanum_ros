@@ -15,9 +15,9 @@ sudo cp ./sources.list /etc/apt/sources.list
 echo "123456789o" | sudo -S apt-get update
 sudo apt-get upgrade -y
 
-sudo apt-get install libgl1-mesa-dev 
-sudo apt-get install libglew-dev libsdl2-dev libsdl2-image-dev libglm-dev libfreetype6-dev 
-sudo apt-get install libglfw3-dev libglfw3
+sudo apt-get install -y libgl1-mesa-dev 
+sudo apt-get install -y libglew-dev libsdl2-dev libsdl2-image-dev libglm-dev libfreetype6-dev 
+sudo apt-get install -y libglfw3-dev libglfw3 libusb-1.0.-* libgtk-3-dev
 sudo apt-get install -y libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
 sudo apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
