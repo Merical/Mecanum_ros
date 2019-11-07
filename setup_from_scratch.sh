@@ -74,7 +74,7 @@ sudo apt-get install -y ros-kinetic-turtlebot-bringup ros-kinetic-openni-* ros-k
 
 sudo apt-get install -y mate-terminal
 
-sudo apt-get install -y ros-kinetic-ros-controllers ros-kinetic-joint-state-* ros-kinetic-controller-manager ros-kinetic-move-base ros-kinetic-web-video-server
+sudo apt-get install -y ros-kinetic-frontier-exploration ros-kinetic-ros-controllers ros-kinetic-joint-state-* ros-kinetic-controller-manager ros-kinetic-move-base ros-kinetic-web-video-server
 
 cd ${CATKIN_DIR}
 catkin_make
