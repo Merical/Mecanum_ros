@@ -105,14 +105,14 @@ on Server (add following lines to ~/.bashrc)
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
 	roslaunch ocean_vision cmt_tracker_mecanum.launch
 	
-<div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/visual_tracking.png" width=640 height=480></div>
+<div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/visual_tracking.png" width=320 height=240></div>
 
 ## 2.8 Simulation(gazebo):
 
 	roslaunch sc_gazebo demo_gazebo_sc0.launch
 	roslaunch sc_gazebo demo_move_base_amcl.launch
 	
-<div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/simulation.png" width=640 height=480></div>
+<div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/simulation.png" width=320 height=240></div>
 	
 ## 2.9 SC_GUI
 ### Python3
