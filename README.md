@@ -128,6 +128,7 @@ $ sudo ntpdate -u SERVER_IP
 
 ## 2.11 Auto Driving Demo
 Please refer to [Merical/AutoDrive](https://github.com/Merical/AutoDrive)
+<div align=center><img src="https://github.com/Merical/AutoDrive/blob/master/Images/signdetection.png" width=640 height=480></div>
 
 # 3 ROS Packakges
 ## 3.1 handsfree_hw
