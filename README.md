@@ -126,6 +126,9 @@ $ sudo apt-get install -y ntpdate
 $ sudo ntpdate -u SERVER_IP
 ```
 
+## 2.11 Auto Driving Demo
+Please refer to [Merical/AutoDrive](https://github.com/Merical/AutoDrive)
+
 # 3 ROS Packakges
 ## 3.1 handsfree_hw
 ### 1) Overview
