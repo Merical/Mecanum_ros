@@ -12,6 +12,11 @@ Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发�
     roslaunch handsfree_hw mecanum_keyboard.launch
 ```
 
+## Environment
+
+- Ubuntu 16.04
+- Ros Kinetic
+
 # 2 Tutorial
 
 ## 2.1 Preparing&Setup
