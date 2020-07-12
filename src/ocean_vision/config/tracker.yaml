@@ -4,7 +4,7 @@ Video:
   Horizontal: 70
 
 
-Handsfree:
+SmartCar:
   k_val: [0.6, 0.3, 1.8, 0.9, 2, 2] # scale, center, dist
   scale_default: 0.5
   dist_default: 0.05

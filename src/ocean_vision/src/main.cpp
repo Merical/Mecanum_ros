@@ -39,7 +39,7 @@ int main( int argc, char** argv )
     ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
     ros::Rate loop_rate(10);
 
-    FileStorage fs2("/home/lishenghao/ros_workspace/ocean_ws/src/ocean_vision/config/config.yml", FileStorage::READ);
+    FileStorage fs2("/home/robot/ros_workspace/ocean_ws/src/ocean_vision/config/config.yml", FileStorage::READ);
     int video_source, video_fps;
     uint16_t FRAME_WIDTH, FRAME_HEIGHT;
     string img_org_path;

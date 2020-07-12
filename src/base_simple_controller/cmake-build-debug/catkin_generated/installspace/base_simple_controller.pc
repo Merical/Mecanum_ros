@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: base_simple_controller
-Description: Description of base_simple_controller
-Version: 0.1.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib -lbase_simple_controller
-Requires: 

@@ -40,10 +40,10 @@ class CMTFollower(object):
         config = yaml.load(f.read())
         self.FRAME_WIDTH = config['Video']['FRAME_WIDTH']
         self.FRAME_HEIGHT = config['Video']['FRAME_HEIGHT']
-        # self.pid_val = config['Handsfree']['k_val']
-        self.scale_default = config['Handsfree']['scale_default']
-        # self.dist_default = config['Handsfree']['dist_default']
-        # self.by_dist = config['Handsfree']['by_dist']
+        # self.pid_val = config['SmartCar']['k_val']
+        self.scale_default = config['SmartCar']['scale_default']
+        # self.dist_default = config['SmartCar']['dist_default']
+        # self.by_dist = config['SmartCar']['by_dist']
         self.s_delta_last = 0
         self.c_delta_last = 0
         self.d_delta_last = 0

@@ -69,9 +69,6 @@ public:
         rect_sub = nh.subscribe("ob_vision/follower/initial_rect", 1, &CmtFrameTrans::getTopicRect, this);
         chatter_pub = nh.advertise<std_msgs::String>("/ob_vision/follower/chatter", 1000);
         color_pub = it.advertise("ob_vision/follower/color", 1);
-
-        cv::namedWindow(COLOR_WINDOW, CV_WINDOW_NORMAL);
-        cv::namedWindow(DEPTH_WINDOW, CV_WINDOW_NORMAL);
     }
 
     ~CmtFrameTrans()

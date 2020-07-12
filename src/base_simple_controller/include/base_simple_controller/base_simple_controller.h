@@ -16,7 +16,7 @@
 ***********************************************************************************************************************/
 
 #include <controller_interface/controller.h>
-#include <handsfree_hw/base_cmd_interface.h>
+#include <sc_hw/base_cmd_interface.h>
 #include <pluginlib/class_list_macros.h>
 
 #include <pluginlib/class_list_macros.h>

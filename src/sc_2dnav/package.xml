@@ -2,7 +2,7 @@
 <package>
   <name>sc_2dnav</name>
   <version>0.1.0</version>
-  <description>The sc_2dnav package for handsfree navigation application config
+  <description>The sc_2dnav package for smartcar navigation application config
   </description>
 
   <maintainer email="chenghao.li@oceanbotech.com">Chenghao Li</maintainer>

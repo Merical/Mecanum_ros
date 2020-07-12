@@ -3,7 +3,7 @@
     <!--<arg name="align_depth" value="true"/>-->
   <!--</include>-->
 
-  <!--<include file="$(find handsfree_hw)/launch/sc_hw.launch"/>-->
+  <!--<include file="$(find sc_hw)/launch/sc_hw.launch"/>-->
 
     <node pkg="ocean_vision" name="cmt_ros_server" type="cmt_ros_server" clear_params="true" output="screen"/>
 

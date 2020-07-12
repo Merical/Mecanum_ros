@@ -7,7 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   realtime_tools
   roscpp
   tf
-  handsfree_hw
+  sc_hw
 )
 
 catkin_package(

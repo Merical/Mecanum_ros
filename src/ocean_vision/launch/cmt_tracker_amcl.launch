@@ -23,5 +23,4 @@
     </rosparam>
   </node>
 
-  <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find handsfree_2dnav)/rviz/HANDSFREE_Robot.rviz" />-->
 </launch>

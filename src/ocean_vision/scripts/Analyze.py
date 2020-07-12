@@ -97,22 +97,22 @@ if __name__ == '__main__':
     #################################
     ## Default Machine Parameter
     ## Check with Evironment
-    max_l_speed = config['Handsfree']['max_l_speed']
-    max_w_speed = config['Handsfree']['max_w_speed']
+    max_l_speed = config['SmartCar']['max_l_speed']
+    max_w_speed = config['SmartCar']['max_w_speed']
     w_speed_last = 0
     l_speed_last = 0
-    phi_value = config['Handsfree']['phi_value']
-    Work_flag = config['Handsfree']['Work_flag']
+    phi_value = config['SmartCar']['phi_value']
+    Work_flag = config['SmartCar']['Work_flag']
     pitch_val = 0
     roll_val = 0
     yaw_val = 0
 
-    default_scale = config['Handsfree']['default_scale']
+    default_scale = config['SmartCar']['default_scale']
     c_delta_last = 0
     s_delta_last = 0
-    center_threshold = config['Handsfree']['center_threshold']
-    scale_threshold = config['Handsfree']['scale_threshold']
-    k_val = config['Handsfree']['k_val']
+    center_threshold = config['SmartCar']['center_threshold']
+    scale_threshold = config['SmartCar']['scale_threshold']
+    k_val = config['SmartCar']['k_val']
     ###################################
 
     os.system('sudo chmod 777 /dev/ttyUSB0')
@@ -120,9 +120,9 @@ if __name__ == '__main__':
     so = cdll.LoadLibrary
     lib = so("./cpp_extension/libpycallclass.so")
     lib_hc = so("./cpp_extension/hc_sensor.so")
-    handsfreeDriver = lib.handsfreeDriver
+    smartcarDriver = lib.smartcarDriver
     hc_sensor = lib_hc.hc_sensor
-    handsfreeDriver.restype = c_char_p
+    smartcarDriver.restype = c_char_p
     hc_sensor.restype = c_char_p
 
     vis2ana_queue = multiprocessing.Queue()
@@ -130,9 +130,9 @@ if __name__ == '__main__':
 
     Vision_task = Vision_process(vis2ana_queue)
     Analyze_task = Analyze_process(vis2ana_queue, ana2cmd_queue, k_val)
-    Handsfree_task = Handsfree_process(ana2cmd_queue)
+    SmartCar_task = SmartCar_process(ana2cmd_queue)
     Vision_task.start()
     Analyze_task.start()
-    Handsfree_task.start()
+    SmartCar_task.start()
 
     # print("\n EXIT MAIN PROCESS!")

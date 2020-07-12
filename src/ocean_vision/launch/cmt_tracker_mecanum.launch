@@ -3,7 +3,7 @@
     <!--<arg name="align_depth" value="true"/>-->
   <!--</include>-->
 
-  <!--<include file="$(find handsfree_hw)/launch/sc_hw.launch"/>-->
+  <!--<include file="$(find sc_hw)/launch/sc_hw.launch"/>-->
 
   <node pkg="ocean_vision" name="cmt_ros" type="cmt_ros" clear_params="true" output="screen"/>
 
@@ -25,6 +25,6 @@
         rotate_pid_value: [2, 1, 0.2, 0.15]
         motion_mode: 0
     </rosparam>
-    <param name="config_file_path" value="$(find ocean_vision)/config/pyconfig.yaml"/>
+    <param name="config_file_path" value="($find ocean_vision)/config/pyconfig.yaml"/>
   </node>
 </launch>

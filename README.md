@@ -8,8 +8,8 @@ Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发�
 - 遵循Tutorial安装依赖安装包并编译SmartCar ROS工作空间，配置环境变量
 - 运行示例  对SmartCar进行远程键盘操控
 ```
-    roslaunch handsfree_hw sc_hw.launch
-    roslaunch handsfree_hw mecanum_keyboard.launch
+    roslaunch sc_hw sc_hw.launch
+    roslaunch sc_hw mecanum_keyboard.launch
 ```
 
 ## Environment
@@ -56,14 +56,14 @@ on Server (add following lines to ~/.bashrc)
 
 ## 2.4 2D LIDAR SLAM
 
-	roslaunch handsfree_hw sc_hw.launch
+	roslaunch sc_hw sc_hw.launch
 	roslaunch rplidar_ros rplidar.launch
 
 ### 2.4.1 Mapping:
 
 	roslaunch sc_2dnav gmapping.launch
 	rosrun rviz rviz -d `rospack find sc_2dnav`/rviz/HANDSFREE_Robot.rviz
-	roslaunch handsfree_hw mecanum_keyboard.launch
+	roslaunch sc_hw mecanum_keyboard.launch
 	roscd sc_2dnav/map/
 	rosrun map_server map_saver -f your_map_name (on pc)
 	
@@ -77,7 +77,7 @@ on Server (add following lines to ~/.bashrc)
 	
 ## 2.5 Rtabmap 3D VSLAM:
 
-	roslaunch handsfree_hw sc_hw.launch
+	roslaunch sc_hw sc_hw.launch
 	roslaunch rplidar_ros rplidar.launch
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
 
@@ -95,13 +95,13 @@ on Server (add following lines to ~/.bashrc)
 
 ## 2.6 Audio:
 
-	roslaunch handsfree_hw sc_hw.launch
+	roslaunch sc_hw sc_hw.launch
 	roslaunch ocean_audio ocean_audio.launch  (pc/nuc)   
 	recognize.py  (pc)
 
 ## 2.7 Visual_tracking:
 
-	roslaunch handsfree_hw sc_hw.launch
+	roslaunch sc_hw sc_hw.launch
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
 	roslaunch ocean_vision cmt_tracker_mecanum.launch
 	
@@ -136,9 +136,9 @@ Please refer to [Merical/AutoDrive](https://github.com/Merical/AutoDrive)
 <div align=center><img src="https://github.com/Merical/AutoDrive/blob/master/Images/signdetection.png" width=640 height=480></div>
 
 # 3 ROS Packakges
-## 3.1 handsfree_hw
+## 3.1 sc_hw
 ### 1) Overview
-handsfree_hw 是机器人嵌入式软件系统与工控机进行通讯的ros package，其中包含了串口通讯，姿态解算，传感器数据上报，命令数据下发，里程计信息发布，机器人控制命令接受等等，以询问的策略与移动平台建立通讯．
+sc_hw 是机器人嵌入式软件系统与工控机进行通讯的ros package，其中包含了串口通讯，姿态解算，传感器数据上报，命令数据下发，里程计信息发布，机器人控制命令接受等等，以询问的策略与移动平台建立通讯．
 ```
 sequenceDiagram
 ROS->>MCU: Set Robot Command
@@ -148,13 +148,13 @@ ROS->>MCU: Read Robot Status
 ### 2) Sample Usage
 为了能够快速启动移动平台与ROS系统的连接，可以使用下面的命令启动驱动结点并获取里程计信息
 
-    roslaunch handsfree_hw sc_hw.launch
+    roslaunch sc_hw sc_hw.launch
 如果需要使用键盘控制全向移动平台，则可以使用下列命令：
     
-    roslaunch handsfree_hw mecanum_keyboard.launch
+    roslaunch sc_hw mecanum_keyboard.launch
 
 ### 3) Nodes
-#### handsfree_hw_node
+#### sc_hw_node
 驱动全向智能移动平台ros节点
 ##### Subscribed Topics
 /mobile_base/mobile_base_controller/cmd_vel([geometry_msgs/Twist](http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html))\
@@ -287,7 +287,7 @@ Oceanbotech视觉跟踪ros包，使用CMT算法与pid控制算法实现智能移
 
 ### 2) Usage
 ```
-	roslaunch handsfree_hw sc_hw.launch
+	roslaunch sc_hw sc_hw.launch
 	roslaunch realsense2_camera rs_camera.launch align_depth:=true
 	roslaunch ocean_vision cmt_tracker_mecanum_remote.launch
 ```
@@ -305,7 +305,7 @@ Oceanbotech二维导航功能包\
     //Mapping:
 	roslaunch sc_2dnav gmapping.launch
 	rosrun rviz rviz -d `rospack find sc_2dnav`/rviz/HANDSFREE_Robot.rviz
-	roslaunch handsfree_hw mecanum_keyboard.launch
+	roslaunch sc_hw mecanum_keyboard.launch
 	roscd sc_2dnav/map/
 	rosrun map_server map_saver -f your_map_name (on pc)
 

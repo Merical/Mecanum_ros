@@ -174,7 +174,7 @@ def node_job():
     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
     roslaunch.configure_logging(uuid)
     platform_launch = roslaunch.parent.ROSLaunchParent(
-        uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/handsfree_hw/launch/sc_hw.launch"]
+        uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/sc_hw/launch/sc_hw.launch"]
     )
     realsense_launch = roslaunch.parent.ROSLaunchParent(
         uuid, ["/home/obt-sc/ros_workspace/SC0_ws/src/realsense-2.1.0/realsense2_camera/launch/rs_camera.launch"]

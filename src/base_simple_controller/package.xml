@@ -20,8 +20,8 @@
   <run_depend>roscpp</run_depend>
   <run_depend>tf</run_depend>
 
-  <build_depend>handsfree_hw</build_depend>
-  <run_depend>handsfree_hw</run_depend>
+  <build_depend>sc_hw</build_depend>
+  <run_depend>sc_hw</run_depend>
 
   <export>
     <controller_interface plugin="${prefix}/base_simple_controller_plugins.xml"/>
