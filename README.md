@@ -227,8 +227,8 @@ id3[HF_HW_ros::readBufferUpdate/HF_HW_ros::writeBufferUpdate] --Update robot dat
 ```
 
 ### 3) Nodes
-#### rplidarNode
-驱动rplidar_a2并发布扫描数局
+#### rplidar Node
+驱动rplidar_a2并发布扫描数据
 ##### Subscribed Topics
 None
 ##### Published Topics
