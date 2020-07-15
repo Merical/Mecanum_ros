@@ -22,6 +22,22 @@ sudo apt-get install -y libglfw3-dev libglfw3 libusb-1.0.-* libgtk-3-dev
 sudo apt-get install -y libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
 sudo apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
+echo $PASSWD | sudo -S apt-get update
+sudo apt-get install -y yasm 
+sudo apt-get install -y libx264-dev 
+sudo apt-get install -y libfaac-dev libmp3lame-dev libtheora-dev libvorbis-dev libxvidcore-dev  libxext-dev libxfixes-dev
+
+cd $HOME/Sources
+curl --silent --location --location-trusted --remote-name http://ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.gz
+tar zxvf ffmpeg-$FFMPEG_VERSION.tar.gz -C ./
+cd ffmpeg-$FFMPEG_VERSION
+./configure --prefix=/usr/local/ffmpeg --enable-nonfree --enable-pic --enable-shared
+make -j4
+sudo make -j4 install
+echo "export FFMPEG_HOME=/usr/local/ffmpeg " >> ~/.bashrc
+echo "export PATH=$HOME/Sources/ffmpeg-$FFMPEG_VERSION/bin:$PATH" >> ~/.bashrc
+source ~/.bashrc
+
 REALSENSE_VERSION=2.16.1
 cd ~/Sources
 curl --silent --location --location-trusted --remote-name https://github.com/IntelRealSense/librealsense/archive/v$REALSENSE_VERSION.tar.gz
