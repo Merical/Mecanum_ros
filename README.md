@@ -85,6 +85,7 @@ on Server (add following lines to ~/.bashrc)
 
 	roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start" (nuc)
 	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
+	roslaunch sc_hw mecanum_keyboard.launch
 
 ### 2.5.2 navigation:
 
