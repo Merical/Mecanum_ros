@@ -11,7 +11,7 @@ git clone https://github.com/Merical/Mecanum_ros.git
 cd Mecanum_ros
 GIT_DIR=$(pwd)
 
-echo PASSWD | sudo mv /etc/apt/sources.list /etc/apt/sources.list.org
+echo PASSWD | sudo -S mv /etc/apt/sources.list /etc/apt/sources.list.org
 sudo cp ./sources.list /etc/apt/sources.list
 echo PASSWD | sudo -S apt-get update
 sudo apt-get upgrade -y
@@ -58,7 +58,7 @@ tar zxvf $OPENCV_VERSION.tar.gz -C ~/Sources
 tar zxvf contrib.$OPENCV_VERSION.tar.gz -C ~/Sources
 cd ~/Sources/opencv-$OPENCV_VERSION
 mkdir build && cd build
-cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=$HOME/Sources/opencv_contrib-3.4.6/modules -D BUILD_TIFF=ON -D OPENCV_ENABLE_NONFREE=ON -DBUILD_PNG=ON ..
+cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=$HOME/Sources/opencv_contrib-$OPENCV_VERSION/modules -D BUILD_TIFF=ON -D OPENCV_ENABLE_NONFREE=ON -DBUILD_PNG=ON ..
 make -j4
 sudo make -j4 install
 
