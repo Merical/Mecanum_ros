@@ -1,0 +1,21 @@
+<launch>
+
+  <node name="sc_hw_node" pkg="sc_hw" type="sc_hw_node" output="screen" >
+      <param name="odom_linear_scale_correction" value="1.0" type="double"/>
+      <param name="odom_angle_scale_correction" value="0.965" type="double"/>
+      <param name="serial_port"         type="string" value="/dev/SCRobot"/>
+  </node>
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find sc_gazebo)/urdf/sc_mecanum.urdf.xacro'" />
+
+  <rosparam file="$(find sc_hw)/config/sc_config.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" ns="/mobile_base" args="joint_state_controller mobile_base_controller"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" >
+  <remap from="/joint_states" to="/mobile_base/joint_states"/>
+  </node>
+
+</launch>

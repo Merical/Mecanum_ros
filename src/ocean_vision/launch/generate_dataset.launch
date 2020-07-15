@@ -1,0 +1,19 @@
+<launch>
+
+    <arg name="rgb_topic" default="/camera/color/image_raw"/>
+    <arg name="depth_topic" default="/camera/aligned_depth_to_color/image_raw"/>
+    <arg name="dataset_path" default="/home/lishenghao/Datasets/slam_dataset/rgbd_dataset_odom_d435"/>
+
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="align_depth" value="true"/>
+    </include>
+
+    <node pkg="ocean_vision" name="ros_rgbd" type="ros_rgbd" clear_params="true" output="screen">
+        <param name="rgb_topic"         type="string" value="$(arg rgb_topic)"/>
+        <param name="depth_topic"       type="string" value="$(arg depth_topic)"/>
+        <param name="dataset_path"      type="string" value="$(arg dataset_path)"/>
+    </node>
+
+    <node name="record" pkg="rosbag" type="record" args="/odom"/>
+
+</launch>

@@ -1,0 +1,18 @@
+<launch>
+
+    <arg name="rgb_topic" default="/camera/rgb/image_raw"/>
+    <arg name="depth_topic" default="/camera/depth/image_raw"/>
+    <arg name="dataset_path" default="/home/lishenghao/Datasets/slam_dataset/rgbd_dataset_odom_astra_floor"/>
+
+    <include file="$(find astra_launch)/launch/astra.launch">
+    </include>
+
+    <node pkg="ocean_vision" name="ros_rgbd" type="ros_rgbd" clear_params="true" output="screen">
+        <param name="rgb_topic"         type="string" value="$(arg rgb_topic)"/>
+        <param name="depth_topic"       type="string" value="$(arg depth_topic)"/>
+        <param name="dataset_path"      type="string" value="$(arg dataset_path)"/>
+    </node>
+
+    <node name="record" pkg="rosbag" type="record" args="/odom -o /home/lishenghao/Datasets/odom/rgbd_dataset_odom_astra_floor"/>
+
+</launch>
