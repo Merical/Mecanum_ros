@@ -1,8 +1,9 @@
 #!/bin/bash
 
+PASSWD="123456789o"
 cd ~/
 mkdir Sources
-echo "123456789o" | sudo -S apt-get update
+echo $PASSWD | sudo -S apt-get update
 sudo apt-get install -y git wget build-essential cmake tar ntpdate
 
 cd ~/
@@ -10,9 +11,9 @@ git clone https://github.com/Merical/Mecanum_ros.git
 cd Mecanum_ros
 GIT_DIR=$(pwd)
 
-echo "123456789o" | sudo mv /etc/apt/sources.list /etc/apt/sources.list.org
+echo PASSWD | sudo mv /etc/apt/sources.list /etc/apt/sources.list.org
 sudo cp ./sources.list /etc/apt/sources.list
-echo "123456789o" | sudo -S apt-get update
+echo PASSWD | sudo -S apt-get update
 sudo apt-get upgrade -y
 
 sudo apt-get install -y libgl1-mesa-dev 
@@ -81,5 +82,5 @@ sudo apt-get install -y ros-kinetic-frontier-exploration ros-kinetic-ros-control
 cd ${CATKIN_DIR}
 catkin_make
 
-echo "source /home/obt-sc/ros_workspace/SC0_ws/devel/setup.bash" >> ~/.bashrc 
+echo "source $HOME/ros_workspace/SC0_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc

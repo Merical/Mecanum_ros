@@ -1,5 +1,6 @@
 #!/bin/bash
 
+PASSWD="123456789o"
 INIT_DIR=$(pwd)
 
 echo "export HANDSFREE_ROBOT_MODEL=stone_v2" >> ~/.bashrc 
@@ -15,7 +16,7 @@ cd SC0_ws
 CATKIN_DIR=$(pwd)
 cp -r ${INIT_DIR}/src ./
 
-echo "123456789o" | sudo -S apt-get update
+echo $PASSWD | sudo -S apt-get update
 sudo cp src/Documentation/sc_udev/* /etc/udev/rules.d/
 sudo /etc/init.d/udev restart
 
@@ -29,5 +30,5 @@ sudo apt-get install -y ros-kinetic-ros-controllers ros-kinetic-joint-state-* ro
 cd ${CATKIN_DIR}
 catkin_make
 
-echo "source /home/obt-sc/ros_workspace/SC0_ws/devel/setup.bash" >> ~/.bashrc 
+echo "source $HOME/ros_workspace/SC0_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
