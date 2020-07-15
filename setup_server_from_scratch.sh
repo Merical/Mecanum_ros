@@ -22,10 +22,10 @@ sudo apt-get install -y libglfw3-dev libglfw3 libusb-1.0.-* libgtk-3-dev
 sudo apt-get install -y libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
 sudo apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
-REALSENSE_VERSION=v2.16.1
-cd ~/Downloads
-curl --silent --location --location-trusted --remote-name https://github.com/IntelRealSense/librealsense/archive/$REALSENSE_VERSION.tar.gz
-tar zxvf $REALSENSE_VERSION.tar.gz -C ~/Sources
+REALSENSE_VERSION=2.16.1
+cd ~/Sources
+curl --silent --location --location-trusted --remote-name https://github.com/IntelRealSense/librealsense/archive/v$REALSENSE_VERSION.tar.gz
+tar zxvf v$REALSENSE_VERSION.tar.gz -C ~/Sources
 cd ~/Sources/librealsense-$REALSENSE_VERSION
 mkdir build && cd build
 cmake ..
@@ -33,7 +33,7 @@ make -j4
 sudo make -j4 install
 
 OPENCV_VERSION=3.4.6
-cd ~/Downloads
+cd ~/Sources
 curl --silent --location --location-trusted --remote-name https://github.com/opencv/opencv_contrib/archive/$OPENCV_VERSION.tar.gz
 mv $OPENCV_VERSION.tar.gz contrib.$OPENCV_VERSION.tar.gz
 curl --silent --location --location-trusted --remote-name https://github.com/opencv/opencv/archive/$OPENCV_VERSION.tar.gz
@@ -41,7 +41,7 @@ tar zxvf $OPENCV_VERSION.tar.gz -C ~/Sources
 tar zxvf contrib.$OPENCV_VERSION.tar.gz -C ~/Sources
 cd ~/Sources/opencv-$OPENCV_VERSION
 mkdir build && cd build
-cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=/home/obt-sc/Sources/opencv_contrib-3.4.6/modules -D BUILD_TIFF=ON -D OPENCV_ENABLE_NONFREE=ON -DBUILD_PNG=ON ..
+cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=$HOME/Sources/opencv_contrib-3.4.6/modules -D BUILD_TIFF=ON -D OPENCV_ENABLE_NONFREE=ON -DBUILD_PNG=ON ..
 make -j4
 sudo make -j4 install
 
