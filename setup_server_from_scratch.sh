@@ -1,5 +1,7 @@
 #!/bin/bash
 
+WITH_CUDA=false
+
 PASSWD="123456789o"
 cd ~/
 mkdir Sources
@@ -58,7 +60,11 @@ tar zxvf $OPENCV_VERSION.tar.gz -C ~/Sources
 tar zxvf contrib.$OPENCV_VERSION.tar.gz -C ~/Sources
 cd ~/Sources/opencv-$OPENCV_VERSION
 mkdir build && cd build
-cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=$HOME/Sources/opencv_contrib-$OPENCV_VERSION/modules -D BUILD_TIFF=ON -D OPENCV_ENABLE_NONFREE=ON -DBUILD_PNG=ON ..
+if [ $WITH_CUDA ]; then
+  cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=$HOME/Sources/opencv_contrib-$OPENCV_VERSION/modules -D BUILD_TIFF=ON -D OPENCV_ENABLE_NONFREE=ON -DBUILD_PNG=ON -DWITH_CUDA=ON -DBUILD_opencv_cudacodec=OFF ..
+else
+  cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=$HOME/Sources/opencv_contrib-$OPENCV_VERSION/modules -D BUILD_TIFF=ON -D OPENCV_ENABLE_NONFREE=ON -DBUILD_PNG=ON ..
+fi
 make -j4
 sudo make -j4 install
 
