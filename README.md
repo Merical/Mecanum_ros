@@ -1,13 +1,35 @@
+# Table of Contents
+- [1. Introduction](#1-introduction)
+- [2. Tutorial](#2-tutorial)
+  - [2.1 Preparing & Setup](#21-preparingsetup)
+  - [2.2 Compile & Build](#22-compile--build)
+  - [2.3 ROS Remote Connection](#23-ros-remote-connection)
+  - [2.4 2D LIDAR SLAM](#24-2d-lidar-slam)
+  - [2.5 Rtabmap 3D VSLAM](#25-rtabmap-3d-vslam)
+  - [2.6 Audio](#26-audio)
+  - [2.7 Visual Tracking](#27-visual_tracking)
+  - [2.8 Simulation (Gazebo)](#28-simulationgazebo)
+  - [2.9 SC_GUI](#29-sc_gui)
+  - [2.10 Time Synchronization](#210-time-synchronization)
+  - [2.11 Auto Driving Demo](#211-auto-driving-demo)
+- [3. ROS Packages](#3-ros-packakges)
+  - [3.1 sc_hw](#31-sc_hw)
+  - [3.2 rplidar](#32-rplidar)
+  - [3.3 realsense2_camera](#33-realsense2_camera)
+  - [3.4 ocean_vision](#34-ocean_vision)
+  - [3.5 sc_2dnav](#35-sc_2dnav)
+
 # 1 Introduction
-本文档对Oceanbotech全向智能移动平台ROS相关部分进行说明。
+This document provides information about the ROS-related aspects of the Oceanbotech Omnidirectional Intelligent Mobile Platform. [Chinese Version](README_CHN.md)
 
-Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发的开源软硬件系统，搭载了麦克纳姆轮的全向智能移动平台，该ROS机器人平台搭载Realsense D435i 深度摄像头，rplidar a2激光雷达，IMU九轴传感器模块，电机编码器等硬件模块，支持里程计、2D SLAM、3D VSLAM、视觉跟踪、视觉循迹等ros功能包，并拥有完备的用户界面。
+Oceanbotech SmartCar V1.0 is an open-source hardware and software system designed for STEAM education, robotics research and development. It features a mecanum wheel-based omnidirectional mobile platform. This ROS robot platform is equipped with a Realsense D435i depth camera, rplidar a2 lidar, 9-axis IMU sensor module, motor encoders and other hardware modules. It supports ROS packages for odometry, 2D SLAM, 3D VSLAM, visual tracking, visual path following, and comes with a comprehensive user interface.
 
-在开始使用Oceanbotech SmartCar V1.0之前，建议您:
-- 确保已经在Ubuntu 16.04上安装ROS操作系统并仔细阅读[初学者文档](http://wiki.ros.org/ROS/Tutorials)
-- 遵循Tutorial安装依赖安装包并编译SmartCar ROS工作空间，配置环境变量
-- 运行示例  对SmartCar进行远程键盘操控
-```
+Before starting to use Oceanbotech SmartCar V1.0, it is recommended that you:
+- Ensure ROS is installed on Ubuntu 16.04 and carefully read the [Beginner Tutorials](http://wiki.ros.org/ROS/Tutorials)
+- Follow the Tutorial to install dependencies and compile the SmartCar ROS workspace, configure environment variables  
+- Run the example to remotely control SmartCar via keyboard
+
+```bash
     roslaunch sc_hw sc_hw.launch
     roslaunch sc_hw mecanum_keyboard.launch
 ```
@@ -20,98 +42,121 @@ Oceanbotech SmartCar V1.0 是一款面向STEAM教育，机器人研究、开发�
 # 2 Tutorial
 
 ## 2.1 Preparing&Setup
+```bash
+# On server NUC
+bash setup_from_scratch.sh # if this is a new setup
+bash setup_environment_server # if opencv and ros is installed
 
-    # On server NUC
-    bash setup_from_scratch.sh # if this is a new setup
-    bash setup_environment_server # if opencv and ros is installed
+sudo su
+echo "server 127.127.1.0" >> /etc/ntp.conf
+echo "fudge 127.127.1.0 stratum 5" >> /etc/ntp.conf
+systemctl restart ntp.service
 
-    sudo su
-    echo "server 127.127.1.0" >> /etc/ntp.conf
-    echo "fudge 127.127.1.0 stratum 5" >> /etc/ntp.conf
-    systemctl restart ntp.service
-    
-    # add the following line to /etc/rc.local, before the "exit 0" line
-    bash /home/obt-sc/ros_workspace/SC0_ws/src/ocean_audio/script/server_bringup.sh
+# add the following line to /etc/rc.local, before the "exit 0" line
+bash /home/obt-sc/ros_workspace/SC0_ws/src/ocean_audio/script/server_bringup.sh
 
-    # On PC
-    bash setup_pc.sh # Only do this step if you didn't setup your pc envirnment at all. Manual setup is recommanded.
-    
+# On PC
+bash setup_pc.sh # Only do this step if you didn't setup your pc envirnment at all. Manual setup is recommanded.
+```
 
-## 2.2 Complie&Build:
-    # put the Mecanum_ros/src inside your workspace, for example: ~/ros_workspace/SC0_ws
-	cd ~/ros_workspace/SC0_ws/
-	catkin_make
+## 2.2 Compile & Build:
+```bash
+# Put the Mecanum_ros/src inside your workspace, for example: ~/ros_workspace/SC0_ws
+cd ~/ros_workspace/SC0_ws/
+catkin_make
+```
 
-## 2.3 Ros Remote Connection:
+## 2.3 ROS Remote Connection:
 
-on PC (add following lines to ~/.bashrc)
+On PC (add following lines to ~/.bashrc):
+```bash
+export ROS_MASTER_URI=http://SERVER_IP_ADDRESS:11311
+export ROS_HOSTNAME=PC_IP_ADDRESS
+```
 
-	export ROS_MASTER_URI=http://SERVER_IP_ADDRESS:11311
-	export ROS_HOSTNAME=PC_IP_ADDRESS
-	
-on Server (add following lines to ~/.bashrc)
-
-	export ROS_MASTER_URI=http://SERVER_IP_ADDRESS:11311
-	export ROS_HOSTNAME=SERVER_IP_ADDRESS
+On Server (add following lines to ~/.bashrc):
+```bash
+export ROS_MASTER_URI=http://SERVER_IP_ADDRESS:11311
+export ROS_HOSTNAME=SERVER_IP_ADDRESS
+```
 
 ## 2.4 2D LIDAR SLAM
 
-	roslaunch sc_hw sc_hw.launch
-	roslaunch rplidar_ros rplidar.launch
+```bash
+# Start the robot hardware interface and LIDAR
+roslaunch sc_hw sc_hw.launch
+roslaunch rplidar_ros rplidar.launch
+```
 
 ### 2.4.1 Mapping:
 
-	roslaunch sc_2dnav gmapping.launch
-	rosrun rviz rviz -d `rospack find sc_2dnav`/rviz/HANDSFREE_Robot.rviz
-	roslaunch sc_hw mecanum_keyboard.launch
-	roscd sc_2dnav/map/
-	rosrun map_server map_saver -f your_map_name (on pc)
+```bash
+roslaunch sc_2dnav gmapping.launch
+rosrun rviz rviz -d `rospack find sc_2dnav`/rviz/HANDSFREE_Robot.rviz
+roslaunch sc_hw mecanum_keyboard.launch
+roscd sc_2dnav/map/
+rosrun map_server map_saver -f your_map_name (on pc)
+```
 	
 <div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/mapping.png" width=640 height=480></div>
 	
 ### 2.4.2 Navigation:
 
-	roslaunch sc_2dnav demo_move_base_amcl_server.launch map_name:=your_map_name (on nuc)
-	roslaunch sc_2dnav demo_move_base_amcl_client.launch (on pc)
+```bash
+roslaunch sc_2dnav demo_move_base_amcl_server.launch map_name:=your_map_name (on nuc)
+roslaunch sc_2dnav demo_move_base_amcl_client.launch (on pc)
+```
 <div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/navigation.png" width=240 height=320></div>
 	
 ## 2.5 Rtabmap 3D VSLAM:
 
-	roslaunch sc_hw sc_hw.launch
-	roslaunch rplidar_ros rplidar.launch
-	roslaunch realsense2_camera rs_camera.launch align_depth:=true
+```bash
+roslaunch sc_hw sc_hw.launch
+roslaunch rplidar_ros rplidar.launch
+roslaunch realsense2_camera rs_camera.launch align_depth:=true
+```
 
 ### 2.5.1 mapping:
 
-	roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start" (nuc)
-	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
-	roslaunch sc_hw mecanum_keyboard.launch
+```bash
+roslaunch sc_2dnav demo_sc_rtab_mapping.launch args:="--delete_db_on_start" (nuc)
+roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
+roslaunch sc_hw mecanum_keyboard.launch
+```
 
 ### 2.5.2 navigation:
 
-	roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true (nuc)
-	roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
+```bash
+roslaunch sc_2dnav demo_sc_rtab_mapping.launch localization:=true (nuc)
+roslaunch sc_2dnav demo_sc_rtab_rviz.launch (pc)
+```
 	
 <div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/rtabmap.png" width=640 height=480></div>
 
 ## 2.6 Audio:
 
-	roslaunch sc_hw sc_hw.launch
-	roslaunch ocean_audio ocean_audio.launch  (pc/nuc)   
-	recognize.py  (pc)
+```bash
+roslaunch sc_hw sc_hw.launch
+roslaunch ocean_audio ocean_audio.launch  (pc/nuc)   
+recognize.py  (pc)
+```
 
 ## 2.7 Visual_tracking:
 
-	roslaunch sc_hw sc_hw.launch
-	roslaunch realsense2_camera rs_camera.launch align_depth:=true
-	roslaunch ocean_vision cmt_tracker_mecanum.launch
+```bash
+roslaunch sc_hw sc_hw.launch
+roslaunch realsense2_camera rs_camera.launch align_depth:=true
+roslaunch ocean_vision cmt_tracker_mecanum.launch
+```
 	
 <div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/visual_tracking.png" width=320 height=240></div>
 
 ## 2.8 Simulation(gazebo):
 
-	roslaunch sc_gazebo demo_gazebo_sc0.launch
-	roslaunch sc_gazebo demo_move_base_amcl.launch
+```bash
+roslaunch sc_gazebo demo_gazebo_sc0.launch
+roslaunch sc_gazebo demo_move_base_amcl.launch
+```
 	
 <div align=center><img src="https://github.com/Merical/Mecanum_ros/blob/master/images/simulation.png" width=320 height=240></div>
 	
@@ -120,16 +165,18 @@ on Server (add following lines to ~/.bashrc)
 Download weights and demo pictures from [Baidu Yun Link](https://pan.baidu.com/s/1T7QvCqoxyCtAedOI4d67PA)
 
 Extract data/ and weights/ folder to the sc_gui_py3 dir.
-	
-	# connect the robot wifi
-	roslaunch ocean_audio server_ros.launch (nuc)
-	cd sc_gui_py3 (pc)
-	python gui.py (pc)
+
+```bash
+# connect the robot wifi
+roslaunch ocean_audio server_ros.launch (nuc)
+cd sc_gui_py3 (pc)
+python gui.py (pc)
+```
 
 ## 2.10 Time Synchronization
-```
-$ sudo apt-get install -y ntpdate
-$ sudo ntpdate -u SERVER_IP
+```bash
+sudo apt-get install -y ntpdate
+sudo ntpdate -u SERVER_IP
 ```
 
 ## 2.11 Auto Driving Demo
@@ -139,58 +186,58 @@ Please refer to [Merical/AutoDrive](https://github.com/Merical/AutoDrive)
 # 3 ROS Packakges
 ## 3.1 sc_hw
 ### 1) Overview
-sc_hw 是机器人嵌入式软件系统与工控机进行通讯的ros package，其中包含了串口通讯，姿态解算，传感器数据上报，命令数据下发，里程计信息发布，机器人控制命令接受等等，以询问的策略与移动平台建立通讯．
-```
-sequenceDiagram
-ROS->>MCU: Set Robot Command
-ROS->>MCU: Read Robot Status
-```
+sc_hw is a ROS package for communication between the robot's embedded software system and the industrial computer. It includes serial communication, attitude calculation, sensor data reporting, command data transmission, odometry information publishing, robot control command reception, etc., establishing communication with the mobile platform through a polling strategy.
 
 ### 2) Sample Usage
-为了能够快速启动移动平台与ROS系统的连接，可以使用下面的命令启动驱动结点并获取里程计信息
+To quickly establish the connection between the mobile platform and ROS system, use the following command to start the driver node and obtain odometry information:
 
-    roslaunch sc_hw sc_hw.launch
-如果需要使用键盘控制全向移动平台，则可以使用下列命令：
-    
-    roslaunch sc_hw mecanum_keyboard.launch
+```bash
+roslaunch sc_hw sc_hw.launch
+```
+
+If you need to control the omnidirectional mobile platform using keyboard, use the following command:
+
+```bash
+roslaunch sc_hw mecanum_keyboard.launch
+```
 
 ### 3) Nodes
 #### sc_hw_node
-驱动全向智能移动平台ros节点
+ROS node for driving the omnidirectional intelligent mobile platform
 ##### Subscribed Topics
 /mobile_base/mobile_base_controller/cmd_vel([geometry_msgs/Twist](http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html))\
-&emsp;移动平台运动速度控制话题，接受机器人移动速度指令
+&emsp;Mobile platform motion velocity control topic, receives robot movement velocity commands
 ##### Published Topics
 /mobile_base/mobile_base_controller/odom([nav_msgs/Odometry](http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html))\
-&emsp;移动平台通过编码器计算得到的里程计信息
+&emsp;Odometry information calculated by the mobile platform using encoders
 
 /handsfree/imu_data([sensor_msgs/Imu](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Imu.html))\
-&emsp;移动平台通过九轴传感器得到的IMU姿态信息
+&emsp;IMU attitude information obtained from the mobile platform's nine-axis sensor
 
 /handsfree/robot_state(sc_msgs)\
-&emsp;移动平台上报的底层状态信息，包括系统时间，电池电量等等
+&emsp;Low-level status information reported by the mobile platform, including system time, battery level, etc.
 
 ##### Parameters
 ~odom_linear_scale_correction(double, default: 1.0)\
-&emsp;里程计线性移动误差矫正系数\
+&emsp;Odometry linear movement error correction coefficient\
 ~odom_angle_scale_correction(double, default: 1.0)\
-&emsp;里程计转动误差矫正系数\
+&emsp;Odometry rotation error correction coefficient\
 ~serial_port(string, default: "/dev/SCRobot")\
-&emsp;机器人移动平台USB绑定端口\
+&emsp;Robot mobile platform USB binding port\
 ~base_mode(string, default: "4omni-wheel")\
-&emsp;移动平台机械结构类型\
+&emsp;Mobile platform mechanical structure type\
 ~with_arm(bool, default: False)\
-&emsp;是否搭载机械臂\
+&emsp;Whether equipped with robotic arm\
 ~controller_freq(double, default: 100)\
-&emsp;移动平台刷新频率
+&emsp;Mobile platform refresh rate
 
 #### mecanum_teleop_key
-使用键盘控制全向智能移动平台ros节点
+ROS node for controlling the omnidirectional intelligent mobile platform using keyboard
 ##### Subscribed Topics
 None
 ##### Published Topics
 /mobile_base/mobile_base_controller/cmd_vel([geometry_msgs/Twist](http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html))\
-&emsp;移动平台运动速度控制话题，接受机器人移动速度指令
+&emsp;Mobile platform motion velocity control topic, receives robot movement velocity commands
 
 ### 3) C\C++ Implimentation
 ```
@@ -204,112 +251,114 @@ id3[HF_HW_ros::readBufferUpdate/HF_HW_ros::writeBufferUpdate] --Update robot dat
 ### 4)  MCU Communication Command Type
 
 ```
-    SHAKING_HANDS 　        //检查与MCU的通讯握手，确保建立连接
-    READ_SYSTEM_INFO　      //读取MCU的系统信息，包括运行时间，电量等
-    SET_ROBOT_SPEED 　      //设置机器人的移动速度
-    READ_ROBOT_SPEED 　     //读取机器人的移动速度
-    READ_GLOBAL_COORDINATE　//读取机器人的全局坐标信息
-    READ_IMU_FUSION_DATA    //读取IMU传感器数据
-    READ_INTF_MODE          //读取机器人的控制权
-    SET_INTF_MODE           //设置机器人的控制权
-    READ_MODULE_CONFIG      //读取机器人的模块配置
-    READ_SONAR_DATA         //读取机器人超声波传感器数局
-    SET_SONAR_STATE         //设置机器人超声波传感器使能
-    CLEAR_ODOMETER_DATA     //清除机器人坐标信息
+    SHAKING_HANDS          # Check communication handshake with MCU to ensure connection
+    READ_SYSTEM_INFO       # Read MCU system info including runtime, battery level etc.
+    SET_ROBOT_SPEED        # Set robot movement speed
+    READ_ROBOT_SPEED       # Read robot movement speed
+    READ_GLOBAL_COORDINATE # Read robot global coordinate information
+    READ_IMU_FUSION_DATA   # Read IMU sensor data
+    READ_INTF_MODE         # Read robot control authority
+    SET_INTF_MODE          # Set robot control authority
+    READ_MODULE_CONFIG     # Read robot module configuration
+    READ_SONAR_DATA        # Read robot ultrasonic sensor data
+    SET_SONAR_STATE        # Enable/disable robot ultrasonic sensors
+    CLEAR_ODOMETER_DATA    # Clear robot coordinate information
 ```
 
 ## 3.2 rplidar
 ### 1) Overview
-激光雷达主要应用在建图、导航、目标跟踪等方面，是以串口形式连接到移动平台上依赖包：两台电脑间通过ROS实现通信，激光雷达相关数据也通过ROS传输到主机中
+The LiDAR is mainly used for mapping, navigation, target tracking and other applications. It connects to the mobile platform via serial port. Dependencies: Communication between two computers is achieved through ROS, and LiDAR-related data is also transmitted to the host through ROS.
 ### 2) Usage
 
-```
-    roslaunch rplidar_ros rplidar.launch
+```bash
+roslaunch rplidar_ros rplidar.launch
 ```
 
 ### 3) Nodes
 #### rplidar Node
-驱动rplidar_a2并发布扫描数据
+Drive rplidar_a2 and publish scan data
 ##### Subscribed Topics
 None
 ##### Published Topics
 /scan([sensor_msgs/LaserScan](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/LaserScan.html))
 ##### Parameters
 serial_port(string，default: "/dev/rplidar"）\
-&emsp;系统中使用的串行端口名称\
+&emsp;Serial port name used in the system\
 serial_baudrate(int，default: 115200)\
-&emsp;串口波特率\
+&emsp;Serial port baud rate\
 frame_id(String，default=laser_frame）\
-&emsp;设备的坐标系名称\
+&emsp;Coordinate system name of the device\
 inverted (bool, default: false)\
-&emsp;指示激光雷达是否倒置安装\
+&emsp;Indicates whether the lidar is mounted upside down\
 angle_compensate (bool, default: false)\
-&emsp;是否需要进行角度补偿\
+&emsp;Whether angle compensation is needed\
 scan_mode (string, default: std::string())\
-&emsp;激光雷达的扫描模式.
+&emsp;Scanning mode of the lidar.
 
 ## 3.3 realsense2_camera
 ### 1) Overview
-Realsense相机主要应用在三维建图、导航及目标跟踪等功能中，realsense中相关信息也通过主题发布。
-深度图像、RGB图像等相关主题
+The Realsense camera is mainly used for 3D mapping, navigation and target tracking functions. The related information in Realsense is also published through topics.
+Topics include depth images, RGB images, etc.
 ### 2) Usage
 
-```
-    roslaunch realsense2_camera rs_camera.launch aligned_depth:=true
+```bash
+roslaunch realsense2_camera rs_camera.launch aligned_depth:=true
 ```
 
 ### 3) Nodes
 #### realsense2_camera_nodelet
-驱动realsense D435 并发布图像数据
+Drive realsense D435 and publish image data
 ##### Subscribed Topics
 None
 ##### Published Topics
 ###### Color camera
 /camera/color/camera_info ([sensor_msgs/CameraInfo](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/CameraInfo.html))\
-&emsp;相机矫正和元数据\
+&emsp;Camera calibration and metadata\
 /camera/color/image_raw ([sensor_msgs/Image](http://docs.ros.org/jade/api/sensor_msgs/html/msg/Image.html))\
-&emsp;相机拍摄的彩色图像，格式为RGB.
+&emsp;Color image captured by the camera in RGB format.
 ###### Depth camera
 /camera/depth/camera_info ([sensor_msgs/CameraInfo](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/CameraInfo.html))\
-&emsp;相机矫正和元数据\
+&emsp;Camera calibration and metadata\
 /camera/depth/image_raw ([sensor_msgs/Image](http://docs.ros.org/jade/api/sensor_msgs/html/msg/Image.html))\
-&emsp;相机拍摄的深度图像，像素值为uint16的深度值.\
+&emsp;Depth image captured by the camera, pixel values are uint16 depth values.\
 /camera/aligned_depth_to_color/image_raw ([sensor_msgs/Image](http://docs.ros.org/jade/api/sensor_msgs/html/msg/Image.html))\
-&emsp;经过适应RGB图像视角矫正的深度图像，像素值为uint16的深度值.\
+&emsp;Depth image aligned to RGB image perspective, pixel values are uint16 depth values.\
 ##### Parameters
 align_depth (bool, default: false)\
-&emsp;指示是否使用矫正后的深度图像\
+&emsp;Indicates whether to use aligned depth image\
 
-更多参数及更多功能请见[realsense_ros](https://github.com/IntelRealSense/realsense-ros)
+For more parameters and features, please see [realsense_ros](https://github.com/IntelRealSense/realsense-ros)
 
 ## 3.4 ocean_vision
 ### 1) Overview
-Oceanbotech视觉跟踪ros包，使用CMT算法与pid控制算法实现智能移动平台跟踪功能
+Oceanbotech vision tracking ROS package, using CMT algorithm and PID control algorithm to implement intelligent mobile platform tracking functionality
 
 ### 2) Usage
-```
-	roslaunch sc_hw sc_hw.launch
-	roslaunch realsense2_camera rs_camera.launch align_depth:=true
-	roslaunch ocean_vision cmt_tracker_mecanum_remote.launch
+```bash
+roslaunch sc_hw sc_hw.launch
+roslaunch realsense2_camera rs_camera.launch align_depth:=true
+roslaunch ocean_vision cmt_tracker_mecanum_remote.launch
 ```
 
 ## 3.5 sc_2dnav
 ### 1) Overview
-Oceanbotech二维导航功能包\
-使用[gmapping](http://wiki.ros.org/gmapping/)算法进行地图建立\
-使用[move_base](http://wiki.ros.org/move_base/)和[amcl](http://wiki.ros.org/amcl)进行实时导航\
-使用[rtabmap](http://wiki.ros.org/rtabmap_ros)进行2维和3维的建图和导航
+Oceanbotech 2D navigation package\
+Using [gmapping](http://wiki.ros.org/gmapping/) algorithm for map building\
+Using [move_base](http://wiki.ros.org/move_base/) and [amcl](http://wiki.ros.org/amcl) for real-time navigation\
+Using [rtabmap](http://wiki.ros.org/rtabmap_ros) for 2D and 3D mapping and navigation
 
 ### 2) Usage
 
 
-    //Mapping:
-	roslaunch sc_2dnav gmapping.launch
-	rosrun rviz rviz -d `rospack find sc_2dnav`/rviz/HANDSFREE_Robot.rviz
-	roslaunch sc_hw mecanum_keyboard.launch
-	roscd sc_2dnav/map/
-	rosrun map_server map_saver -f your_map_name (on pc)
+```bash
+# Mapping:
+roslaunch sc_2dnav gmapping.launch
+rosrun rviz rviz -d `rospack find sc_2dnav`/rviz/HANDSFREE_Robot.rviz
+roslaunch sc_hw mecanum_keyboard.launch
+roscd sc_2dnav/map/
+rosrun map_server map_saver -f your_map_name (on pc)
 
-    //Navigation:
-    roslaunch sc_2dnav demo_move_base_amcl.launch map_name:=your_map_name
+# Navigation:
+roslaunch sc_2dnav demo_move_base_amcl.launch map_name:=your_map_name
+```
 
