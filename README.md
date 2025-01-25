@@ -30,8 +30,8 @@ Before starting to use Oceanbotech SmartCar V1.0, it is recommended that you:
 - Run the example to remotely control SmartCar via keyboard
 
 ```bash
-    roslaunch sc_hw sc_hw.launch
-    roslaunch sc_hw mecanum_keyboard.launch
+roslaunch sc_hw sc_hw.launch
+roslaunch sc_hw mecanum_keyboard.launch
 ```
 
 ## Environment
